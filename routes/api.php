@@ -1,8 +1,14 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::group([], function () {
+  Route::get('user', function (Request $request) {
+    return UserResource::make($request->user());
+  });
+
+  Route::apiResource('users', UserController::class);
+});

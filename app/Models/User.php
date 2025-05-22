@@ -13,6 +13,8 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $with = ['roles.permissions'];
+
     /**
      * The attributes that are mass assignable.
      *

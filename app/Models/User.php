@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -44,5 +45,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    protected static function boot() {
+      parent::boot();
+      static::creating(function ($model) {
+        if(!$model->id) {
+          $model->id = Str::uuid();
+        }
+      });
+    }
+
+    public function roles() {
+      return $this->belongsToMany(Role::class);
     }
 }

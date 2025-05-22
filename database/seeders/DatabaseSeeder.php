@@ -13,18 +13,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
-          'id' => '7f84b7d8-3e2c-4a1a-96f3-9e8a2b6c74d1',
+          'id' => '88964338-6721-4816-be39-9a9afbe8df95',
             'name' => 'Admin',
             'email' => 'admin@itsms.com',
         ]);
 
         User::factory()->create([
-          'id' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+          'id' => '152f3ecd-2e69-4cd4-bdc8-43c685602e54',
             'name' => 'User',
             'email' => 'user@itsms.com',
+        ]);
+
+        $this->call([
+          RoleSeeder::class,
+          PermissionSeeder::class,
+          PermissionRoleTableSeeder::class,
+          RoleUserTableSeeder::class,
         ]);
     }
 }

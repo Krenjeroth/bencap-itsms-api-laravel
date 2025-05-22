@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
     public function index(Request $request) {
-      // Gate::authorize('user_index');
+      Gate::authorize('user_index');
 
       $query = User::query();
 

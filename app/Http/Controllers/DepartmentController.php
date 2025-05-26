@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Http\Resources\DepartmentResource;
+use App\Http\Requests\StoreDepartmentRequest;
 use Illuminate\Support\Facades\Gate;
 
 class DepartmentController extends Controller
@@ -42,5 +43,15 @@ class DepartmentController extends Controller
           ]
       ]);
 
+    }
+
+    public function store(StoreDepartmentRequest $request) {
+      // Gate::authorize('department_store');
+      
+      $data = $request->validated();
+
+      $department = Department::create($data);
+
+      return new DepartmentResource($department);
     }
 }

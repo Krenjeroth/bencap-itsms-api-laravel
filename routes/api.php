@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Middleware\AuthGates;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
@@ -12,4 +13,6 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   });
 
   Route::apiResource('users', UserController::class);
+
+  Route::apiResource('departments', DepartmentController::class);
 });

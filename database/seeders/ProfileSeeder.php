@@ -19,8 +19,8 @@ class ProfileSeeder extends Seeder
           ['user_id' => 'cf6f9ac2-1cd4-43a8-bfba-acdc431282f9', 'display_name' => 'KrenjerJS', 'designation' => 'Programmer I' , 'engagement' => 'ready'],
           ['user_id' => '3292e07c-a2a6-40bf-8070-0bb9e76292d6', 'display_name' => 'BrianBM', 'designation' => 'CMT II' , 'engagement' => 'ready'],
           ['user_id' => '5ea07171-e126-4142-9997-9ec24e180e53', 'display_name' => 'RaeBC', 'designation' => 'CMT I' , 'engagement' => 'ready'],
-          ['user_id' => '4885e9d6-7f1c-4283-b1c1-954316312be2', 'display_name' => 'PerseusP', 'designation' => 'CMT I' , 'engagement' => 'ready'],
-          ['user_id' => 'e749da8a-8924-44a5-b9a8-b270f43c0e42', 'display_name' => 'NeilsenK', 'designation' => 'CMT I' , 'engagement' => 'ready'],
+          ['user_id' => '4885e9d6-7f1c-4283-b1c1-954316312be2', 'display_name' => 'PerseusBP', 'designation' => 'CMT I' , 'engagement' => 'ready'],
+          ['user_id' => 'e749da8a-8924-44a5-b9a8-b270f43c0e42', 'display_name' => 'NeilsenPK', 'designation' => 'CMT I' , 'engagement' => 'ready'],
           ['user_id' => 'bf4475b5-257e-4679-b7bc-35941392d659', 'display_name' => 'LesterPM', 'designation' => 'CMT I' , 'engagement' => 'ready'],
           // User
           // ['user_id' => '152f3ecd-2e69-4cd4-bdc8-43c685602e54', 'display_name' => 'User', 'designation' => 'User' , 'engagement' => 'ready'],

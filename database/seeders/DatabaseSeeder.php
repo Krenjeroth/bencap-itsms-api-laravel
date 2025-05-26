@@ -39,13 +39,13 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
           'id' => '4885e9d6-7f1c-4283-b1c1-954316312be2',
-            'name' => 'Perseus Pangilinan',
+            'name' => 'Perseus B. Pangilinan',
             'email' => 'perseusp@itsms.com',
         ]);
 
         User::factory()->create([
           'id' => 'e749da8a-8924-44a5-b9a8-b270f43c0e42',
-            'name' => 'Neilsen Kisim',
+            'name' => 'Neilsen P. Kisim',
             'email' => 'neilsenk@itsms.com',
         ]);
 

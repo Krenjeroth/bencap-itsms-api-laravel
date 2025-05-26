@@ -15,6 +15,7 @@ class RoleSeeder extends Seeder
     {
         $roles = [
           ['title' => 'Admin'],
+          ['title' => 'Personnel'],
           ['title' => 'User'],
         ];
 

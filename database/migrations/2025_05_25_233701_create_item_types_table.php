@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('classification')->nullable();
             $table->string('purpose')->nullable();
+            $table->string('type');
             $table->string('status')->nullable();
             $table->timestamps();
         });

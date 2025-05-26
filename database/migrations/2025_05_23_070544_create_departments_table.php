@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('barcode');
             $table->string('name');
-            $table->string('full_name');
+            $table->string('full_name')->nullable();
             $table->string('division');
             $table->string('abbreviation');
             $table->timestamps();

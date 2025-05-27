@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Requests\StoreDepartmentRequest;
+use App\Http\Requests\UpdateDepartmentRequest;
 use Illuminate\Support\Facades\Gate;
 
 class DepartmentController extends Controller
@@ -54,4 +55,15 @@ class DepartmentController extends Controller
 
       return new DepartmentResource($department);
     }
+
+    public function update(UpdateDepartmentRequest $request, Department $department) {
+      // Gate::authorize('department_update');
+
+      $data = $request->validated();
+
+      $department->update($data);
+
+      return new DepartmentResource($department);
+    }
+
 }

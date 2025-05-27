@@ -11,10 +11,6 @@ class TicketAssignment extends Model
         'accepted_at',
     ];
 
-    public function profile() {
-      return $this->belongsTo(Profile::class);
-    }
-
     public function ticket() {
       return $this->belongsTo(Ticket::class);
     }

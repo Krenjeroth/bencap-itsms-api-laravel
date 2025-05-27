@@ -66,4 +66,12 @@ class DepartmentController extends Controller
       return new DepartmentResource($department);
     }
 
+    public function destroy(Department $department) {
+      // Gate::authorize('department_destroy');
+
+      $department->delete();
+      
+      return new DepartmentResource($department);
+    }
+
 }

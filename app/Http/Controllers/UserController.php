@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
@@ -58,6 +59,10 @@ class UserController extends Controller
 
       $user = User::create($data);
 
+      if($user){
+        $user->roles()->syncWithoutDetaching([$data['role']]);
+      }
+
       return new UserResource($user);
     }
 
@@ -67,6 +72,11 @@ class UserController extends Controller
       $data = $request->validated();
 
       $user->update($data);
+
+      // Replace the user's current role with the new one
+      if ($user) {
+          $user->roles()->sync([$data['role']]); // Detach existing and attach new
+      }
 
       return new UserResource($user);
     }
@@ -82,5 +92,16 @@ class UserController extends Controller
       $user->delete();
       
       return new UserResource($user);
+    }
+
+    // Assign role to a user
+    public function assignRoleToUser(Request $request)
+    {
+        $user = User::findOrFail($request->user_id);
+        $role = Role::findOrFail($request->role_id);
+
+        $user->roles()->syncWithoutDetaching([$role->id]);
+
+        return response()->json(['message' => 'Role assigned to user successfully']);
     }
 }

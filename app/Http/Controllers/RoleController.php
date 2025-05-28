@@ -57,7 +57,16 @@ class RoleController extends Controller
 
       $data = $request->validated();
 
-      $role->update($data);
+      $role->update([
+        'title' => $data['title'],
+      ]);
+
+      $currentPermissionIds = $role->permissions()->pluck('id')->sort()->values();
+      $newPermissionIds = collect($data['permission_ids'] ?? [])->sort()->values();
+
+      if ($currentPermissionIds->toJson() !== $newPermissionIds->toJson()) {
+        $role->permissions()->sync($newPermissionIds);
+      }
 
       return new RoleResource($role);
     }
@@ -68,5 +77,18 @@ class RoleController extends Controller
       $role->delete();
       
       return new RoleResource($role);
+    }
+
+    public function select()
+    {
+        // ?? Member no active membership
+        $roles = Role::all();
+        // $members = Member::with('memberships')->whereDoesntHave('memberships', function ($query) {
+        //     $query->where('status', true);
+        // })->get();
+
+        return response()->json([
+          'data' => RoleResource::collection($roles)
+        ]);
     }
 }

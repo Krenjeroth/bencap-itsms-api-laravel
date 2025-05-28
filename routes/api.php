@@ -21,4 +21,10 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::apiResource('permissions', PermissionController::class);
 
   Route::apiResource('roles', RoleController::class);
+
+  // Custom Routes
+
+  Route::get('permissions-all', [PermissionController::class, 'permissionAll']);
+
+  Route::get('roles-select', [RoleController::class, 'select']);
 });

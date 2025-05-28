@@ -70,4 +70,12 @@ class PermissionController extends Controller
       
       return new PermissionResource($permission);
     }
+
+    public function permissionAll() {
+        $permissions = Permission::all();
+
+        return response()->json([
+          'data' => PermissionResource::collection($permissions)
+        ]);
+    }
 }

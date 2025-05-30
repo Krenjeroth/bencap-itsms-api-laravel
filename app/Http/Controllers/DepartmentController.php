@@ -74,4 +74,12 @@ class DepartmentController extends Controller
       return new DepartmentResource($department);
     }
 
+    public function select() {
+        $departments = Department::all();
+
+        return response()->json([
+          'data' => DepartmentResource::collection($departments)
+        ]);
+    }
+
 }

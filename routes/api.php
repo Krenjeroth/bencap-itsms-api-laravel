@@ -8,6 +8,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Middleware\AuthGates;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
@@ -25,9 +26,16 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::apiResource('positions', PositionController::class);
 
+  Route::apiResource('employees', EmployeeController::class);
+
   // Custom Routes
 
   Route::get('permissions-all', [PermissionController::class, 'permissionAll']);
 
   Route::get('roles-select', [RoleController::class, 'select']);
+
+  Route::get('departments-select', [DepartmentController::class, 'select']);
+  
+  Route::get('positions-select', [PositionController::class, 'select']);
+
 });

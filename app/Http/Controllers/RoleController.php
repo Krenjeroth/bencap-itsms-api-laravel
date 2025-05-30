@@ -79,8 +79,7 @@ class RoleController extends Controller
       return new RoleResource($role);
     }
 
-    public function select()
-    {
+    public function select() {
         // ?? Member no active membership
         $roles = Role::all();
         // $members = Member::with('memberships')->whereDoesntHave('memberships', function ($query) {

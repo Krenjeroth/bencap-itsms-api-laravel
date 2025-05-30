@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('ticket_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('user_id')
+            $table->foreignId('profile_id')
               ->constrained()
               ->cascadeOnDelete();
             $table->text('comment');

@@ -27,9 +27,11 @@ class StoreEmployeeRequest extends FormRequest
             'firstname' => ['required', 'string', 'max:255'],
             'middlename' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
+            'full_name' => ['required', 'string', 'max:255'],
             'suffix' => ['nullable', 'string', 'max:255'],
-            'position' => ['required', 'exists:positions,id'],
-            'department' => ['required', 'exists:departments,id'],
+            'department_id' => ['required', 'exists:departments,id'],
+            'position_id' => ['required', 'exists:positions,id'],
+            'img_path' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

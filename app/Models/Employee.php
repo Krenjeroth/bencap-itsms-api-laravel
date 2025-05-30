@@ -9,13 +9,15 @@ class Employee extends Model
     protected $with = ['department', 'position'];
 
     protected $fillable = [
-        'uid',
-        'firstname',
-        'middlename',
-        'lastname',
-        'suffix',
-        'full_name',
-        'img_path',
+      'department_id',
+      'position_id',
+      'uid',
+      'firstname',
+      'middlename',
+      'lastname',
+      'suffix',
+      'full_name',
+      'img_path',
     ];
 
     public function department() {

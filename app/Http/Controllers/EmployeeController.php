@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Requests\StoreEmployeeRequest;
+use App\Http\Requests\UpdateEmployeeRequest;
 
 class EmployeeController extends Controller
 {
@@ -55,6 +56,16 @@ class EmployeeController extends Controller
       $data = $request->validated();
 
       $employee = Employee::create($data);
+
+      return new EmployeeResource($employee);
+    }
+
+    public function update(UpdateEmployeeRequest $request, Employee $employee) {
+      // Gate::authorize('employee_update');
+
+      $data = $request->validated();
+
+      $employee->update($data);
 
       return new EmployeeResource($employee);
     }

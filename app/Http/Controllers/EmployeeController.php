@@ -69,4 +69,12 @@ class EmployeeController extends Controller
 
       return new EmployeeResource($employee);
     }
+
+    public function destroy(Employee $employee) {
+      // Gate::authorize('employee_destroy');
+
+      $employee->delete();
+      
+      return new EmployeeResource($employee);
+    }
 }

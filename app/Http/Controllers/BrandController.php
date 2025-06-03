@@ -69,4 +69,12 @@ class BrandController extends Controller
       
       return new BrandResource($brand);
     }
+
+    public function select() {
+        $brands = Brand::all();
+
+        return response()->json([
+          'data' => BrandResource::collection($brands)
+        ]);
+    }
 }

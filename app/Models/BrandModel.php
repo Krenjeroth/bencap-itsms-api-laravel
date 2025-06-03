@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class BrandModel extends Model
 {
+    protected $with = ['brand'];
+
     protected $fillable = [
+        'brand_id',
         'name',
         'image',
         'year_released',

@@ -10,6 +10,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\BrandModelController;
 use App\Http\Middleware\AuthGates;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
@@ -30,7 +31,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::apiResource('employees', EmployeeController::class);
 
   Route::apiResource('brands', BrandController::class);
-  
+
+  Route::apiResource('brand-models', BrandModelController::class);
 
   // Custom Routes
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandModelController;
 use App\Http\Controllers\ItemTypeController;
+use App\Http\Controllers\CommonProblemController;
 use App\Http\Middleware\AuthGates;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
@@ -36,6 +37,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::apiResource('brand-models', BrandModelController::class);
 
   Route::apiResource('item-types', ItemTypeController::class);
+
+  Route::apiResource('common-problems', CommonProblemController::class);
 
   // Custom Routes
 

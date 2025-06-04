@@ -11,6 +11,7 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandModelController;
+use App\Http\Controllers\ItemTypeController;
 use App\Http\Middleware\AuthGates;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
@@ -34,6 +35,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::apiResource('brand-models', BrandModelController::class);
 
+  Route::apiResource('item-types', ItemTypeController::class);
+
   // Custom Routes
 
   Route::get('permissions-all', [PermissionController::class, 'permissionAll']);
@@ -45,5 +48,7 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('positions-select', [PositionController::class, 'select']);
 
   Route::get('brands-select', [BrandController::class, 'select']);
+
+  Route::get('item-types-select', [ItemTypeController::class, 'select']);
 
 });

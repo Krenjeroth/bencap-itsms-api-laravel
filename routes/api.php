@@ -13,6 +13,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandModelController;
 use App\Http\Controllers\ItemTypeController;
 use App\Http\Controllers\CommonProblemController;
+use App\Http\Controllers\ItemController;
 use App\Http\Middleware\AuthGates;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
@@ -40,6 +41,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::apiResource('common-problems', CommonProblemController::class);
 
+  Route::apiResource('items', ItemController::class); 
+
   // Custom Routes
 
   Route::get('permissions-all', [PermissionController::class, 'permissionAll']);
@@ -51,6 +54,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('positions-select', [PositionController::class, 'select']);
 
   Route::get('brands-select', [BrandController::class, 'select']);
+
+  Route::get('brand-models-select', [BrandModelController::class, 'select']);
 
   Route::get('item-types-select', [ItemTypeController::class, 'select']);
 

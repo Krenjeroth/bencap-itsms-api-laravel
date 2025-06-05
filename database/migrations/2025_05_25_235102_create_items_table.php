@@ -21,10 +21,10 @@ return new class extends Migration
               ->cascadeOnDelete();
             $table->string('parent_component')->nullable();
             $table->integer('code')->nullable();
-            $table->string('barcode');
+            $table->string('barcode')->nullable();
             $table->text('description')->nullable();
             $table->string('serial_number')->nullable();
-            $table->string('property_number')->nullable();
+            $table->string('property_number');
             $table->string('ics_number')->nullable();
             $table->timestamp('date_acquired')->nullable();
             $table->string('ip_address')->nullable();

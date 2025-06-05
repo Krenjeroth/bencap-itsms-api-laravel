@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\ItemResource;
+use App\Models\Item;
+use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\UpdateItemRequest;
+use Illuminate\Http\Request;
+
+class ItemController extends Controller
+{
+    public function index(Request $request) {
+      // Gate::authorize('item_type_index');
+
+      $query = Item::query();
+
+      if($request->has('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use($search) {
+          $q->where('code', 'LIKE', "%{$search}%")
+          ->orWhere('barcode', 'LIKE', "%{$search}%")
+          ->orWhere('description', 'LIKE', "%{$search}%");
+        });
+      }
+
+      if ($request->has('classification')) {
+        $query->where('classification', $request->classification);
+      }
+
+      // Sorting (default to ID)
+      if ($request->has('sort')) {
+        $order = $request->input('order', 'asc');
+        $query->orderBy($request->sort, $order);
+      }
+
+      // Paginate with customizable per-page count
+      $items = $query->paginate($request->input('per_page', 5))->appends($request->query());
+
+      return response()->json([
+          'data' => ItemResource::collection($items),
+          'meta' => [
+              'total' => $items->total(),
+              'per_page' => $items->perPage(),
+              'current_page' => $items->currentPage(),
+              'last_page' => $items->lastPage(),
+          ]
+      ]);
+    }
+
+    public function store(StoreItemRequest $request) {
+      // Gate::authorize('item_store');
+      
+      $data = $request->validated();
+
+      $item = Item::create($data);
+
+      return new ItemResource($item);
+    }
+
+    public function update(UpdateItemRequest $request, Item $item) {
+      // Gate::authorize('item_update');
+
+      $data = $request->validated();
+
+      $item->update($data);
+
+      return new ItemResource($item);
+    }
+
+    public function destroy(Item $item) {
+      // Gate::authorize('item_destroy');
+
+      $item->delete();
+      
+      return new ItemResource($item);
+    }
+
+    public function select() {
+        $items = Item::all();
+
+        return response()->json([
+          'data' => ItemResource::collection($items)
+        ]);
+    }
+}

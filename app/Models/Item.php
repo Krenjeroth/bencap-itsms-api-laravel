@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
+    protected $with = ['item_type', 'brand_model'];
+
     protected $fillable = [
+        'item_type_id',
+        'brand_model_id',
         'parent_component',
         'code',
         'barcode',

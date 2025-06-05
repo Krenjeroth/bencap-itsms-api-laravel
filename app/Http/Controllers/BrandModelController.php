@@ -69,4 +69,23 @@ class BrandModelController extends Controller
       
       return new BrandModelResource($brand_model);
     }
+
+    public function select(Request $request) {
+      $query = $request->get('q');
+      $limit = (int) $request->get('limit', 20);
+      $page = (int) $request->get('page', 1);
+      $offset = ($page - 1) * $limit;
+
+      $brand_models = BrandModel::query()
+          ->when($query, fn($qBuilder) =>
+              $qBuilder->where('name', 'like', "%$query%")
+          )
+          ->offset($offset)
+          ->limit($limit)
+          ->get();
+
+      return response()->json([
+          'data' => BrandModelResource::collection($brand_models),
+      ]);
+    }
 }

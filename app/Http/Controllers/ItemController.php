@@ -18,8 +18,10 @@ class ItemController extends Controller
       if($request->has('search')) {
         $search = $request->search;
         $query->where(function ($q) use($search) {
-          $q->where('code', 'LIKE', "%{$search}%")
-          ->orWhere('barcode', 'LIKE', "%{$search}%")
+          $q->where('property_number', 'LIKE', "%{$search}%")
+          ->orWhere('parent_component', 'LIKE', "%{$search}%")
+          ->orWhere('serial_number', 'LIKE', "%{$search}%")
+          ->orWhere('ics_number', 'LIKE', "%{$search}%")
           ->orWhere('description', 'LIKE', "%{$search}%");
         });
       }

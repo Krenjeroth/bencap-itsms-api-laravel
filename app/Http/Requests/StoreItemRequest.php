@@ -23,28 +23,27 @@ class StoreItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'code' => ['required', 'string', 'max:255', 'unique:common_problems,code'],
-            // 'general_term' => ['required', 'string', 'max:255', 'unique:common_problems,general_term'],
-            'item_type' => ['required', 'exists:item_types,id'],
-            'brand_model' => ['required', 'exists:brand_models,id'],
+            'item_type_id' => ['required', 'exists:item_types,id'],
+            'brand_model_id' => ['required', 'exists:brand_models,id'],
             'parent_component' => ['nullable', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:255', 'unique:items,code'],
-            'barcode' => ['required', 'string', 'max:255', 'unique:items,barcode'],
+            'barcode' => ['nullable', 'string', 'max:255', 'unique:items,barcode'],
             'description' => ['nullable', 'string', 'max:255'],
             'serial_number' => ['nullable', 'string', 'max:255'],
-            'property_number' => ['nullable', 'string', 'max:255'],
+            'property_number' => ['required', 'string', 'max:255'],
             'ics_number' => ['nullable', 'string', 'max:255'],
             'date_acquired' => ['nullable', 'date'],
             'ip_address' => ['nullable', 'string', 'max:255'],
             'mac_address' => ['nullable', 'string', 'max:255'],
+            'inventory_type' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'string', 'max:255'],
         ];
     }
 
     public function attributes(): array {
         return [
-            'item_type' => 'Item Type',
-            'brand_model' => 'Brand Model',
+            'item_type_id' => 'Item Type',
+            'brand_model_id' => 'Brand Model',
             'parent_component' => 'Parent Component',
             'code' => 'Code',
             'barcode' => 'Barcode',
@@ -55,8 +54,8 @@ class StoreItemRequest extends FormRequest
             'date_acquired' => 'Date Acquired',
             'ip_address' => 'IP Address',
             'mac_address' => 'MAC Address',
-            'status' => 'Status',
             'inventory_type' => 'Inventory Type',
+            'status' => 'Status',
         ];
     }
 

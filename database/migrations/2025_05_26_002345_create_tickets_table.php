@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('item_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('service_id')
+            $table->foreignId('it_service_id')
               ->constrained()
               ->cascadeOnDelete();
             $table->text('concern');

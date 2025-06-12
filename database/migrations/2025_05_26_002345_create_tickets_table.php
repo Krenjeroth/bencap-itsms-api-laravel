@@ -25,8 +25,9 @@ return new class extends Migration
             $table->foreignId('it_service_id')
               ->constrained()
               ->cascadeOnDelete();
+            $table->string('ticket_number')->unique();
             $table->text('concern');
-            $table->string('status')->nullable();
+            $table->string('query_status')->nullable();
             $table->string('request_status')->nullable();
             $table->string('priority')->nullable();
             $table->timestamp('date');

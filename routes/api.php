@@ -15,7 +15,9 @@ use App\Http\Controllers\ItemTypeController;
 use App\Http\Controllers\CommonProblemController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItServiceController;
+use App\Http\Controllers\TicketController;
 use App\Http\Middleware\AuthGates;
+use App\Enums\QueryStatus;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('user', function (Request $request) {
@@ -44,7 +46,9 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::apiResource('items', ItemController::class); 
 
-  Route::apiResource('it-services', ItServiceController::class); 
+  Route::apiResource('it-services', ItServiceController::class);
+
+  Route::apiResource('tickets', TicketController::class);
 
   // Custom Routes
 
@@ -61,5 +65,15 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('brand-models-select', [BrandModelController::class, 'select']);
 
   Route::get('item-types-select', [ItemTypeController::class, 'select']);
+
+  // Enums
+
+  Route::get('/query-statuses', fn () =>
+    collect(QueryStatus::cases())
+      ->map(fn ($status) => [
+          'value' => $status->value,
+          'label' => str_replace('_', ' ', ucfirst($status->name)),
+      ])
+  );
 
 });

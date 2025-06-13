@@ -77,4 +77,23 @@ class EmployeeController extends Controller
       
       return new EmployeeResource($employee);
     }
+
+    public function search(Request $request) {
+      $query = $request->get('q');
+      $limit = (int) $request->get('limit', 20);
+      $page = (int) $request->get('page', 1);
+      $offset = ($page - 1) * $limit;
+
+      $employees = Employee::query()
+          ->when($query, fn($qBuilder) =>
+              $qBuilder->where('full_name', 'like', "%$query%")
+          )
+          ->offset($offset)
+          ->limit($limit)
+          ->get();
+
+      return response()->json([
+          'data' => EmployeeResource::collection($employees),
+      ]);
+    }
 }

@@ -78,11 +78,22 @@ class ItemController extends Controller
       return new ItemResource($item);
     }
 
-    public function select() {
-        $items = Item::all();
+    public function search(Request $request) {
+      $query = $request->get('q');
+      $limit = (int) $request->get('limit', 20);
+      $page = (int) $request->get('page', 1);
+      $offset = ($page - 1) * $limit;
 
-        return response()->json([
-          'data' => ItemResource::collection($items)
-        ]);
+      $items = Item::query()
+          ->when($query, fn($qBuilder) =>
+              $qBuilder->where('property_number', 'like', "%$query%")
+          )
+          ->offset($offset)
+          ->limit($limit)
+          ->get();
+
+      return response()->json([
+          'data' => ItemResource::collection($items),
+      ]);
     }
 }

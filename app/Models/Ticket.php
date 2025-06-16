@@ -11,6 +11,10 @@ class Ticket extends Model
     protected $with = ['profile', 'employee', 'item', 'itService'];
 
     protected $fillable = [
+        'profile_id',
+        'employee_id',
+        'item_id',
+        'it_service_id',
         'ticket_number',
         'concern',
         'query_status',

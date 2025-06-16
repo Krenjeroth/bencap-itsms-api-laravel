@@ -29,13 +29,12 @@ class StoreTicketRequest extends FormRequest
             'employee_id' => 'required|exists:employees,id',
             'item_id' => 'required|exists:items,id',
             'it_service_id' => 'required|exists:it_services,id',
-            'ticket_number' => 'required|string|max:255|unique:it_services,ticket_number',
+            // 'ticket_number' => 'required|string|max:255|unique:it_services,ticket_number',
             'concern' => 'required|string',
-            // 'query_status' => 'nullable|string',
             'query_status' => ['required', new Enum(QueryStatus::class)],
             'request_status' => 'nullable|string',
             'priority' => 'nullable|string',
-            'date' => 'required|date',
+            'date' => 'nullable|date',
         ];
     }
 

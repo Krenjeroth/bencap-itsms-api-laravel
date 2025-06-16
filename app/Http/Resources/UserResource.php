@@ -36,6 +36,7 @@ class UserResource extends JsonResource
           'id' => $this->id,
           'name' => $this->name,
           'email' => $this->email,
+          'profile' => new ProfileResource($this->whenLoaded('profile')),
           // 'status' => $this->status ? 'Active' : 'Inactive',
           'created_at' => $this->created_at,
           'roles' => $roles,

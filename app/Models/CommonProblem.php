@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CommonProblem extends Model
 {
-    protected $with = ['item_type'];
+    protected $with = ['itemType'];
     protected $fillable = [
         'code',
         'general_term',
@@ -14,7 +14,7 @@ class CommonProblem extends Model
         'item_type_id',
     ];
 
-    public function item_type() {
+    public function itemType() {
       return $this->belongsTo(ItemType::class);
     }
 }

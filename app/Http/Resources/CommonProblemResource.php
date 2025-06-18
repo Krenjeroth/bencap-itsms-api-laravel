@@ -16,7 +16,7 @@ class CommonProblemResource extends JsonResource
     {
         return [
           'id' => $this->id,
-          'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
+          'item_type' => ItemTypeResource::make($this->whenLoaded('itemType')),
           'code' => $this->code,
           'general_term' => $this->general_term,
           'information' => $this->information,

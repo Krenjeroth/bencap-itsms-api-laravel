@@ -46,7 +46,7 @@ class StoreTicketRequest extends FormRequest
             'it_service_id.required'   => 'The :attribute is required.',
             'ticket_number.required'   => 'The :attribute is required.',
             'concern.required'   => 'The :attribute is required.',
-            'status.required'   => 'The :attribute is required.',
+            'query_status.required'   => 'The :attribute is required.',
             'request_status.required'   => 'The :attribute is required.',
             'priority.required'   => 'The :attribute is required.',
             'date.required'   => 'The :attribute is required.',

@@ -31,7 +31,7 @@ class Ticket extends Model
       $today = Carbon::now()->format('Ymd');
       $count = self::whereDate('created_at', Carbon::today())->count();
       $serial = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
-      return "TICK-{$today}-{$serial}";
+      return "{$today}-{$serial}"; // 2025-0616-0001 / 20250616-0001
     }
 
     public function profile() {

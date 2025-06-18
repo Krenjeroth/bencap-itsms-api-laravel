@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateTicketRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -22,7 +23,31 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            // 'profile_id' => 'required|exists:profiles,id',
+            'employee_id' => 'required|exists:employees,id',
+            'item_id' => 'required|exists:items,id',
+            'it_service_id' => 'required|exists:it_services,id',
+            // 'ticket_number' => 'required|string|max:255|unique:it_services,ticket_number',
+            'concern' => 'required|string',
+            // 'query_status' => ['required', new Enum(QueryStatus::class)],
+            // 'request_status' => 'nullable|string',
+            'priority' => 'nullable|string',
+            // 'date' => 'nullable|date',
+        ];
+    }
+
+    public function messages(): array {
+        return [
+            // 'profile_id.required'   => 'The :attribute is required.',
+            'employee_id.required'   => 'The :attribute is required.',
+            'item_id.required'   => 'The :attribute is required.',
+            'it_service_id.required'   => 'The :attribute is required.',
+            // 'ticket_number.required'   => 'The :attribute is required.',
+            'concern.required'   => 'The :attribute is required.',
+            // 'query_status.required'   => 'The :attribute is required.',
+            // 'request_status.required'   => 'The :attribute is required.',
+            'priority.required'   => 'The :attribute is required.',
+            // 'date.required'   => 'The :attribute is required.',
         ];
     }
 }

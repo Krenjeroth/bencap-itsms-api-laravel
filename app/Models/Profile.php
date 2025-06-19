@@ -23,7 +23,7 @@ class Profile extends Model
     //   return $this->belongsToMany(Ticket::class);
     // }
 
-    public function assignedTickets() {
-      return $this->belongsToMany(Ticket::class, 'ticket_assignees');
+    public function ticketPersonnel() {
+      return $this->belongsToMany(Ticket::class, 'ticket_personnel');
     }
 }

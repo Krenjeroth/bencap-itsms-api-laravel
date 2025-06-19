@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\TicketResource;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
-use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
@@ -80,8 +81,8 @@ class TicketController extends Controller
     public function accept(Request $request, Ticket $ticket) {
         $profile = Auth::user()->profile;
 
-        if (!$ticket->assignees->contains($profile->id)) {
-            $ticket->assignees()->attach($profile->id);
+        if (!$ticket->personnel->contains($profile->id)) {
+            $ticket->personnel()->attach($profile->id);
         }
 
         return response()->json(['message' => 'Ticket accepted.']);

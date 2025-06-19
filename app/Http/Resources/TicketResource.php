@@ -25,7 +25,7 @@ class TicketResource extends JsonResource
           'item' => ItemResource::make($this->whenLoaded('item')),
           'it_service' => ItServiceResource::make($this->whenLoaded('itService')),
           // 'assignees' => ProfileResource::collection($this->whenLoaded('assignees')),
-          'assignees' => ProfileResource::collection($this->whenLoaded('assignees')),
+          'personnel' => ProfileResource::collection($this->whenLoaded('personnel')),
           'ticket_number' => $this->ticket_number,
           'concern' => $this->concern,
           'query_status' => $this->query_status,

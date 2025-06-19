@@ -8,7 +8,7 @@ use App\Enums\QueryStatus;
 
 class Ticket extends Model
 {
-    protected $with = ['profile', 'employee', 'item', 'itService'];
+    protected $with = ['profile', 'employee', 'item', 'itService', 'assignees'];
 
     protected $fillable = [
         'profile_id',
@@ -48,5 +48,9 @@ class Ticket extends Model
     
     public function itService() {
       return $this->belongsTo(ItService::class);
+    }
+
+    public function assignees() {
+      return $this->belongsToMany(Profile::class, 'ticket_assignees');
     }
 }

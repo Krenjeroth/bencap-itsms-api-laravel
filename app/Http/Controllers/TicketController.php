@@ -76,4 +76,14 @@ class TicketController extends Controller
       
       return new TicketResource($ticket);
     }
+
+    public function accept(Request $request, Ticket $ticket) {
+        $profile = Auth::user()->profile;
+
+        if (!$ticket->assignees->contains($profile->id)) {
+            $ticket->assignees()->attach($profile->id);
+        }
+
+        return response()->json(['message' => 'Ticket accepted.']);
+    }
 }

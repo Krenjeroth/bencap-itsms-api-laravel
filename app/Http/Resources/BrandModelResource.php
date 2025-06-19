@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\BrandResource;
+use App\Http\Resources\ItemTypeResource;
 
 class BrandModelResource extends JsonResource
 {
@@ -19,6 +20,7 @@ class BrandModelResource extends JsonResource
           'id' => $this->id,
           'name' => $this->name,
           'brand' => BrandResource::make($this->whenLoaded('brand')),
+          'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
           'image' => $this->image,
           'year_released' => $this->year_released,
           'status' => $this->status,

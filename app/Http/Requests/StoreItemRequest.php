@@ -23,7 +23,6 @@ class StoreItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'item_type_id' => ['required', 'exists:item_types,id'],
             'brand_model_id' => ['required', 'exists:brand_models,id'],
             'parent_component' => ['nullable', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:255', 'unique:items,code'],

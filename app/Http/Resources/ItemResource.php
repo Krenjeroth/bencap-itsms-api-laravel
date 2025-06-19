@@ -18,7 +18,6 @@ class ItemResource extends JsonResource
     {
         return [
           'id' => $this->id,
-          'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
           'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
           'parent_component' => $this->parent_component,
           'code' => $this->code,

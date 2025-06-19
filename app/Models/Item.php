@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    protected $with = ['item_type', 'brand_model'];
+    protected $with = ['brand_model'];
 
     protected $fillable = [
-        'item_type_id',
         'brand_model_id',
         'parent_component',
         'code',
@@ -25,9 +24,6 @@ class Item extends Model
         'inventory_type',
     ];
 
-    public function item_type() {
-      return $this->belongsTo(ItemType::class);
-    }
     public function brand_model() {
       return $this->belongsTo(BrandModel::class);
     }

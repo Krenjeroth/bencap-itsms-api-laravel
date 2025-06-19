@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('item_type_id')
-              ->constrained()
-              ->cascadeOnDelete();
             $table->foreignId('brand_model_id')
               ->constrained()
               ->cascadeOnDelete();

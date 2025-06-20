@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Enums\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\TicketResource;
@@ -81,10 +82,66 @@ class TicketController extends Controller
     public function accept(Request $request, Ticket $ticket) {
         $profile = Auth::user()->profile;
 
-        if (!$ticket->personnel->contains($profile->id)) {
-            $ticket->personnel()->attach($profile->id);
+        if (!$profile) {
+            return response()->json(['error' => 'Profile not found.'], 404);
         }
 
-        return response()->json(['message' => 'Ticket accepted.']);
+        $alreadyAccepted = $ticket->personnel()->where('profile_id', $profile->id)->exists();
+
+        if (!$alreadyAccepted) {
+            $ticket->personnel()->attach($profile->id);
+
+            if ($ticket->personnel()->count() === 1) {
+                $ticket->update([
+                    'query_status' => TicketStatus::InProgress,
+                    'request_status' => TicketStatus::Accepted,
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Ticket accepted successfully.']);
+    }
+
+    public function checkStock(Request $request, Ticket $ticket) {
+      $ticket->update([
+          'query_status' => TicketStatus::CheckingStock,
+      ]);
+
+      return new TicketResource($ticket);
+    }
+
+    public function awaitStock(Request $request, Ticket $ticket) {
+      $ticket->update([
+          'query_status' => TicketStatus::AwaitingStock,
+      ]);
+
+      return new TicketResource($ticket);      
+    }
+
+    public function resolve(Request $request, Ticket $ticket) {
+      $ticket->update([
+          'query_status' => TicketStatus::Resolved,
+          'request_status' => TicketStatus::Closed,
+      ]);
+
+      return new TicketResource($ticket);
+    }
+
+    public function cancel(Request $request, Ticket $ticket) {
+      $ticket->update([
+          'query_status' => TicketStatus::Cancelled,
+          'request_status' => TicketStatus::Closed,
+      ]);
+
+      return new TicketResource($ticket);
+    }
+
+    public function reopen(Request $request, Ticket $ticket) {
+      $ticket->update([
+          'query_status' => TicketStatus::InProgress,
+          'request_status' => TicketStatus::Reopened,
+      ]);
+
+      return new TicketResource($ticket);
     }
 }

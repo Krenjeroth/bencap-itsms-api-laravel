@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use App\Enums\QueryStatus;
+use App\Enums\TicketStatus;
 
 class Ticket extends Model
 {
@@ -24,7 +24,8 @@ class Ticket extends Model
     ];
 
     protected $casts = [
-    'query_status' => QueryStatus::class,
+    'query_status' => TicketStatus::class,
+    'request_status' => TicketStatus::class,
     ];
 
     public static function generateTicketNumber(): string {

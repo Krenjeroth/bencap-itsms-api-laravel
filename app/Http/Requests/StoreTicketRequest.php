@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Enums\QueryStatus;
+use App\Enums\TicketStatus;
 use Illuminate\Validation\Rules\Enum;
 
 class StoreTicketRequest extends FormRequest
@@ -31,7 +31,7 @@ class StoreTicketRequest extends FormRequest
             'it_service_id' => 'required|exists:it_services,id',
             // 'ticket_number' => 'required|string|max:255|unique:it_services,ticket_number',
             'concern' => 'required|string',
-            'query_status' => ['required', new Enum(QueryStatus::class)],
+            'query_status' => ['required', new Enum(TicketStatus::class)],
             'request_status' => 'nullable|string',
             'priority' => 'nullable|string',
             'date' => 'nullable|date',

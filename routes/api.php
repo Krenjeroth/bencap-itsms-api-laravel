@@ -17,7 +17,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItServiceController;
 use App\Http\Controllers\TicketController;
 use App\Http\Middleware\AuthGates;
-use App\Enums\QueryStatus;
+use App\Enums\TicketStatus;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('user', function (Request $request) {
@@ -68,6 +68,15 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('it-services-select', [ItServiceController::class, 'select']);
 
+  // Ticket Actions
+
+  Route::post('tickets/{ticket}/accept', [TicketController::class, 'accept']);
+  Route::post('tickets/{ticket}/check-stock', [TicketController::class, 'checkStock']);
+  Route::post('tickets/{ticket}/await-stock', [TicketController::class, 'awaitStock']);
+  Route::post('tickets/{ticket}/resolve', [TicketController::class, 'resolve']);
+  Route::post('tickets/{ticket}/cancel', [TicketController::class, 'cancel']);
+  Route::post('tickets/{ticket}/reopen', [TicketController::class, 'reopen']);
+
   // Search Routes
 
   Route::get('employees-search', [EmployeeController::class, 'search']);
@@ -77,7 +86,7 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   // Enums
 
   Route::get('/query-statuses', fn () =>
-    collect(QueryStatus::cases())
+    collect(TicketStatus::cases())
       ->map(fn ($status) => [
           'value' => $status->value,
           'label' => str_replace('_', ' ', ucfirst($status->name)),

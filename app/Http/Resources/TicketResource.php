@@ -8,6 +8,7 @@ use App\Http\Resources\ProfileResource;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\ItemResource;
 use App\Http\Resources\ItServiceResource;
+use App\Enums\TicketStatus;
 
 class TicketResource extends JsonResource
 {
@@ -18,6 +19,7 @@ class TicketResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $hasAccepted = $this->personnel->contains($request->user()->profile_id);
         return [
           'id' => $this->id,
           'profile' => ProfileResource::make($this->whenLoaded('profile')),
@@ -34,6 +36,17 @@ class TicketResource extends JsonResource
           'date' => $this->date,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
+          'is_accepted_by_me' => $hasAccepted,
+          'can_accept' => in_array($this->query_status, [
+                    TicketStatus::Queued,
+                    TicketStatus::InProgress,
+                    TicketStatus::CheckingStock,
+                    TicketStatus::AwaitingStock,
+                    TicketStatus::AwaitingUser,
+                    TicketStatus::AwaitingVendor
+                ])
+                && $this->request_status === TicketStatus::Open
+                && !$hasAccepted,
         ];
     }
 }

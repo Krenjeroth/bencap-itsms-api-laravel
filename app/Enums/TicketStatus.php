@@ -8,7 +8,7 @@ enum TicketStatus: string
     case Queued = 'queued'; // Only when open
     case InProgress = 'in_progress'; // Only when accepted
     case CheckingStock = 'checking_stock'; // Only when accepted
-    case AwaitingStock = 'awaiting_stock'; // Only when accepted
+    case AwaitingPart = 'awaiting_part'; // Only when accepted
     case AwaitingUser = 'awaiting_user'; // Only when accepted
     case AwaitingVendor = 'awaiting_vendor'; // Only when accepted
     case Resolved = 'resolved';

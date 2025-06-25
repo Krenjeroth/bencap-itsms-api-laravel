@@ -42,6 +42,7 @@ class TicketResource extends JsonResource
               default => null,
           },
           'date' => $this->date,
+          'released_at' => $this->released_at,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
           'is_accepted_by_me' => $hasAccepted,

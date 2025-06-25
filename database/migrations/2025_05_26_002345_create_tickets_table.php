@@ -31,7 +31,8 @@ return new class extends Migration
             $table->string('request_status')->nullable();
             $table->enum('service_method', ['on_site', 'pulled_out'])->nullable();
             $table->string('priority')->nullable();
-            $table->timestamp('date');
+            $table->timestamp('date')->nullable();
+            $table->timestamp('released_at')->nullable();
             $table->timestamps();
         });
     }

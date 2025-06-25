@@ -23,6 +23,7 @@ class Ticket extends Model
         'priority',
         'service_method',
         'date',
+        'released_at',
     ];
 
     protected $casts = [

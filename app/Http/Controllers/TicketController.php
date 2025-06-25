@@ -11,6 +11,7 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Requests\ResolveTicketRequest;
 use App\Http\Requests\SetTicketServiceMethodRequest;
+use App\Http\Requests\SetTicketReleaseDateRequest;
 
 class TicketController extends Controller
 {
@@ -150,6 +151,14 @@ class TicketController extends Controller
     }
 
     public function setServiceMethod(SetTicketServiceMethodRequest $request, Ticket $ticket) {
+      $data = $request->validated();
+
+      $ticket->update($data);
+
+      return new TicketResource($ticket);
+    }
+
+    public function setReleaseDate(SetTicketReleaseDateRequest $request, Ticket $ticket) {
       $data = $request->validated();
 
       $ticket->update($data);

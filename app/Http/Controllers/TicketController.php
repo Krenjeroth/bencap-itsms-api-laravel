@@ -112,7 +112,7 @@ class TicketController extends Controller
       return new TicketResource($ticket);
     }
 
-    public function awaitStock(Request $request, Ticket $ticket) {
+    public function awaitPart(Request $request, Ticket $ticket) {
       $ticket->update([
           'query_status' => TicketStatus::AwaitingPart,
       ]);

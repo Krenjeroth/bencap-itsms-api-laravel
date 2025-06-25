@@ -72,7 +72,7 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::post('tickets/{ticket}/accept', [TicketController::class, 'accept']);
   Route::post('tickets/{ticket}/check-stock', [TicketController::class, 'checkStock']);
-  Route::post('tickets/{ticket}/await-stock', [TicketController::class, 'awaitStock']);
+  Route::post('tickets/{ticket}/await-part', [TicketController::class, 'awaitPart']);
   Route::post('tickets/{ticket}/resolve', [TicketController::class, 'resolve']);
   Route::post('tickets/{ticket}/cancel', [TicketController::class, 'cancel']);
   Route::post('tickets/{ticket}/reopen', [TicketController::class, 'reopen']);

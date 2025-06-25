@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\TicketStatus;
+use App\Enums\ServiceMethod;
 use Illuminate\Validation\Rules\Enum;
 
 class StoreTicketRequest extends FormRequest
@@ -35,6 +36,7 @@ class StoreTicketRequest extends FormRequest
             'request_status' => 'nullable|string',
             'priority' => 'nullable|string',
             'date' => 'nullable|date',
+            'service_method' => ['required', new Enum(ServiceMethod::class)],
         ];
     }
 

@@ -29,6 +29,7 @@ return new class extends Migration
             $table->text('concern');
             $table->string('query_status')->nullable();
             $table->string('request_status')->nullable();
+            $table->enum('service_method', ['on_site', 'pulled_out'])->nullable();
             $table->string('priority')->nullable();
             $table->timestamp('date');
             $table->timestamps();

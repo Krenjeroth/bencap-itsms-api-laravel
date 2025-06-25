@@ -76,6 +76,7 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::post('tickets/{ticket}/resolve', [TicketController::class, 'resolve']);
   Route::post('tickets/{ticket}/cancel', [TicketController::class, 'cancel']);
   Route::post('tickets/{ticket}/reopen', [TicketController::class, 'reopen']);
+  Route::post('tickets/{ticket}/set-service-method', [TicketController::class, 'setServiceMethod']);
 
   // Search Routes
 

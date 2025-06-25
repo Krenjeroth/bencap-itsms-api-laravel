@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Enums\TicketStatus;
+use App\Enums\ServiceMethod;
 use Illuminate\Http\Request;
 use App\Http\Resources\ItemResource;
 use Illuminate\Support\Facades\Auth;
@@ -34,12 +35,16 @@ class TicketResource extends JsonResource
           'query_status' => $this->query_status,
           'request_status' => $this->request_status,
           'priority' => $this->priority,
+          'service_method' => $this->service_method,
+          'service_method_formatted' => match ($this->service_method) {
+              ServiceMethod::OnSite => 'On site',
+              ServiceMethod::PulledOut => 'Pulled out',
+              default => null,
+          },
           'date' => $this->date,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
           'is_accepted_by_me' => $hasAccepted,
-          'debugger' => $this->personnel->pluck('id'),
-          'debugger2' => $this->personnel->contains(Auth::user()->profile->id),
           'can_accept' => in_array($this->query_status, [
                     TicketStatus::Queued,
                     TicketStatus::InProgress,

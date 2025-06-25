@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\TicketResource;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Requests\ResolveTicketRequest;
+use App\Http\Requests\SetTicketServiceMethodRequest;
 
 class TicketController extends Controller
 {
@@ -112,17 +114,19 @@ class TicketController extends Controller
 
     public function awaitStock(Request $request, Ticket $ticket) {
       $ticket->update([
-          'query_status' => TicketStatus::AwaitingStock,
+          'query_status' => TicketStatus::AwaitingPart,
       ]);
 
       return new TicketResource($ticket);      
     }
 
-    public function resolve(Request $request, Ticket $ticket) {
-      $ticket->update([
-          'query_status' => TicketStatus::Resolved,
-          'request_status' => TicketStatus::Closed,
-      ]);
+    public function resolve(ResolveTicketRequest $request, Ticket $ticket) {
+      $data = $request->validated();
+
+      $data['query_status'] = TicketStatus::Resolved;
+      $data['request_status'] = TicketStatus::Closed;
+
+      $ticket->update($data);
 
       return new TicketResource($ticket);
     }
@@ -141,6 +145,14 @@ class TicketController extends Controller
           'query_status' => TicketStatus::InProgress,
           'request_status' => TicketStatus::Reopened,
       ]);
+
+      return new TicketResource($ticket);
+    }
+
+    public function setServiceMethod(SetTicketServiceMethodRequest $request, Ticket $ticket) {
+      $data = $request->validated();
+
+      $ticket->update($data);
 
       return new TicketResource($ticket);
     }

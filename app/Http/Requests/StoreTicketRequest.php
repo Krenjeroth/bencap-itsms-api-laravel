@@ -28,8 +28,9 @@ class StoreTicketRequest extends FormRequest
         return [
             'profile_id' => 'required|exists:profiles,id',
             'employee_id' => 'required|exists:employees,id',
-            'item_id' => 'required|exists:items,id',
+            'item_id' => 'nullable|exists:items,id',
             'it_service_id' => 'required|exists:it_services,id',
+            'item_type_id' => ['required', 'exists:item_types,id'],
             // 'ticket_number' => 'required|string|max:255|unique:it_services,ticket_number',
             'concern' => 'required|string',
             'query_status' => ['required', new Enum(TicketStatus::class)],

@@ -19,12 +19,13 @@ return new class extends Migration
             $table->foreignId('employee_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('item_id')
+            $table->foreignId('item_id')->nullable()
               ->constrained()
-              ->cascadeOnDelete();
+              ->nullOnDelete();
             $table->foreignId('it_service_id')
               ->constrained()
               ->cascadeOnDelete();
+            $table->foreignId('solution_id')->nullable()->constrained()->nullOnDelete();
             $table->string('ticket_number')->unique();
             $table->text('concern');
             $table->string('query_status')->nullable();

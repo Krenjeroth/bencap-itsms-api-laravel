@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Enums\TicketStatus;
 use App\Enums\ServiceMethod;
+use App\Models\Solution;
 
 class Ticket extends Model
 {
-    protected $with = ['profile', 'employee', 'item', 'itService', 'personnel'];
+    protected $with = ['profile', 'employee', 'item', 'itService', 'personnel', 'item_type'];
 
     protected $fillable = [
         'profile_id',
         'employee_id',
         'item_id',
+        'item_type_id',
         'it_service_id',
         'ticket_number',
         'concern',
@@ -24,6 +26,7 @@ class Ticket extends Model
         'service_method',
         'date',
         'released_at',
+        'solution_id',
     ];
 
     protected $casts = [
@@ -57,5 +60,13 @@ class Ticket extends Model
 
     public function personnel() {
       return $this->belongsToMany(Profile::class, 'ticket_personnel');
+    }
+
+    public function item_type() {
+      return $this->belongsTo(ItemType::class);
+    }
+
+    public function solution() {
+        return $this->belongsTo(Solution::class);
     }
 }

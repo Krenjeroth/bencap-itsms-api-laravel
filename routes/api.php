@@ -16,6 +16,7 @@ use App\Http\Controllers\CommonProblemController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItServiceController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\SolutionController;
 use App\Http\Middleware\AuthGates;
 use App\Enums\TicketStatus;
 
@@ -50,6 +51,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::apiResource('tickets', TicketController::class);
 
+  Route::apiResource('solutions', SolutionController::class);
+
   // Custom Routes
 
   Route::get('permissions-all', [PermissionController::class, 'permissionAll']);
@@ -68,6 +71,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('it-services-select', [ItServiceController::class, 'select']);
 
+  Route::get('solutions-select', [SolutionController::class, 'select']);
+
   // Ticket Actions
 
   Route::post('tickets/{ticket}/accept', [TicketController::class, 'accept']);
@@ -78,6 +83,7 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::post('tickets/{ticket}/reopen', [TicketController::class, 'reopen']);
   Route::post('tickets/{ticket}/set-service-method', [TicketController::class, 'setServiceMethod']);
   Route::post('tickets/{ticket}/set-release-date', [TicketController::class, 'setReleaseDate']);
+  
 
   // Search Routes
 

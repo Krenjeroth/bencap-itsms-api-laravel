@@ -25,6 +25,9 @@ return new class extends Migration
             $table->foreignId('it_service_id')
               ->constrained()
               ->cascadeOnDelete();
+            $table->foreignId('item_type_id')->nullable()
+              ->constrained()
+              ->nullOnDelete();
             $table->foreignId('solution_id')->nullable()->constrained()->nullOnDelete();
             $table->string('ticket_number')->unique();
             $table->text('concern');
@@ -34,6 +37,7 @@ return new class extends Migration
             $table->string('priority')->nullable();
             $table->timestamp('date')->nullable();
             $table->timestamp('released_at')->nullable();
+            $table->string('contact_number')->nullable();
             $table->timestamps();
         });
     }

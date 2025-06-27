@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('brand_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('item_type_id')
+            $table->foreignId('item_type_id')->nullable()
               ->constrained()
-              ->cascadeOnDelete();
+              ->nullOnDelete();
             $table->string('name');
             $table->string('image')->nullable();
             $table->string('year_released')->nullable();

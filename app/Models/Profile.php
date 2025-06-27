@@ -26,4 +26,9 @@ class Profile extends Model
     public function ticketPersonnel() {
       return $this->belongsToMany(Ticket::class, 'ticket_personnel');
     }
+
+    public function solutions() {
+      return $this->hasMany(Solution::class, 'author_id');
+    }
+
 }

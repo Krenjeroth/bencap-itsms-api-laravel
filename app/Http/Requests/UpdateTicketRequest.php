@@ -34,6 +34,7 @@ class UpdateTicketRequest extends FormRequest
             // 'request_status' => 'nullable|string',
             'priority' => 'nullable|string',
             // 'date' => 'nullable|date',
+            'contact_number' => 'nullable|string',
         ];
     }
 

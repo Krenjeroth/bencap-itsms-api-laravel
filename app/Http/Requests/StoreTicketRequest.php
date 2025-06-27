@@ -38,6 +38,7 @@ class StoreTicketRequest extends FormRequest
             'priority' => 'nullable|string',
             'date' => 'nullable|date',
             'service_method' => ['required', new Enum(ServiceMethod::class)],
+            'contact_number' => 'nullable|string',
         ];
     }
 

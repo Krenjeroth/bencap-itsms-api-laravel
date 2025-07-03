@@ -102,7 +102,7 @@ class TicketController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Ticket accepted successfully.']);
+        return new TicketResource($ticket);
     }
 
     public function checkStock(Request $request, Ticket $ticket) {

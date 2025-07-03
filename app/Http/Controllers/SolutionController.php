@@ -18,7 +18,7 @@ class SolutionController extends Controller
     }
 
     public function select() {
-        $solutions = Solution::all();
+        $solutions = Solution::latest()->get();
 
         return response()->json([
           'data' => SolutionResource::collection($solutions)

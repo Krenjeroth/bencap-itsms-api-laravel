@@ -11,6 +11,7 @@ use App\Http\Resources\ProfileResource;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\ItServiceResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\SolutionResource;
 
 class TicketResource extends JsonResource
 {

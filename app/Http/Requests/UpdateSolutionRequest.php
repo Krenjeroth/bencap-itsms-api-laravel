@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreSolutionRequest extends FormRequest
+class UpdateSolutionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,11 @@ class StoreSolutionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'author_id' => 'required|exists:profiles,id',
             'title' => 'required|string',
             'description' => 'nullable|string',
             'error_code' => 'nullable|string',
             'reference_url' => 'nullable|string',
+            'description_updated_at' => 'nullable|date',
         ];
     }
 }

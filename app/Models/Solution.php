@@ -10,8 +10,12 @@ class Solution extends Model
     protected $with = [ 'author'];
 
     protected $fillable = [
-        'description',
         'author_id',
+        'title',
+        'description',
+        'error_code',
+        'reference_url',
+        'description_updated_at',
     ];
 
     // public function tickets() {

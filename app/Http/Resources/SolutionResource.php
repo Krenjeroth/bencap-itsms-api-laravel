@@ -19,6 +19,10 @@ class SolutionResource extends JsonResource
           'id' => $this->id,
           'description' => $this->description,
           'author' => ProfileResource::make($this->whenLoaded('author')),
+          'title' => $this->title,
+          'error_code' => $this->error_code,
+          'reference_url' => $this->reference_url,
+          'description_updated_at' => $this->description_updated_at,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
         ];

@@ -66,6 +66,14 @@ class SolutionController extends Controller
       return new SolutionResource($solution);
     }
 
+    public function destroy(Solution $solution) {
+      // Gate::authorize('item_destroy');
+
+      $solution->delete();
+      
+      return new SolutionResource($solution);
+    }
+
     public function select() {
         $solutions = Solution::latest()->get();
 

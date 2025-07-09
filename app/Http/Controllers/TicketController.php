@@ -20,6 +20,16 @@ class TicketController extends Controller
 
       $query = Ticket::query();
 
+      $profile_id = Auth::user()->profile->id;
+
+      // $query = Ticket::query()
+      //   ->with(['personnel']) // eager load to avoid N+1
+      //   ->withCount([
+      //       // This counts if current user accepted the ticket
+      //       'personnel as is_accepted_by_me' => fn($q) =>
+      //       $q->where('profile_id', $profile_id)
+      //   ])->orderByDesc('is_accepted_by_me');
+
       if($request->has('search')) {
         $search = $request->search;
         $query->where(function ($q) use($search) {
@@ -28,12 +38,35 @@ class TicketController extends Controller
         });
       }
 
-      if ($request->has('classification')) {
-        $query->where('classification', $request->classification);
+      if ($request->has('tab')) {
+        if ($request->tab === 'accepted') {
+          $query->whereHas('personnel', function ($q) use ($profile_id) {
+            $q->whereNot('profile_id', $profile_id);
+          });
+        } elseif ($request->tab === 'open') {
+          $query->where('request_status', TicketStatus::Open);
+        } elseif ($request->tab === 'closed') {
+          $query->where('request_status', TicketStatus::Closed);
+        } elseif ($request->tab === 'accepted_by_me') {
+          $query->whereHas('personnel', function ($q) use ($profile_id) {
+            $q->where('profile_id', $profile_id);
+          });
+        }
+        // elseif ($request->tab === 'unaccepted') {
+        //     $query->whereDoesntHave('personnel', function ($q) use ($profile_id) {
+        //         $q->where('profile_id', $profile_id);
+        //     });
+        // }
       }
 
+      if ($request->has('query_status')) {
+        $query->where('query_status', $request->query_status);
+      }
+
+      // $query->orderByDesc('is_accepted_by_me');
+
       // Sorting (default to ID)
-      if ($request->has('sort')) {
+      if ($request->filled('sort')) {
         $order = $request->input('order', 'asc');
         $query->orderBy($request->sort, $order);
       }

@@ -12,6 +12,7 @@ use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\ItServiceResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\SolutionResource;
+use App\Http\Resources\ItemTypeResource;
 
 class TicketResource extends JsonResource
 {
@@ -23,6 +24,12 @@ class TicketResource extends JsonResource
     public function toArray(Request $request): array
     {
         $hasAccepted = $this->personnel->contains(Auth::user()->profile->id);
+        $acceptedByOthers = $this->personnel->isNotEmpty() && $this->personnel->doesntContain(Auth::user()->profile->id);
+        // $profile_id = Auth::user()->profile->id;
+        // $hasAccepted = $this->personnel
+        // ->contains(function ($person) use ($profile_id) {
+        //     return $person->pivot->profile_id === $profile_id && $person->pivot->accepted === true;
+        // });
 
         return [
           'id' => $this->id,
@@ -50,6 +57,7 @@ class TicketResource extends JsonResource
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
           'is_accepted_by_me' => $hasAccepted,
+          'is_accepted_by_others' => $acceptedByOthers,
           'can_accept' => in_array($this->query_status, [
                     TicketStatus::Queued,
                     TicketStatus::InProgress,

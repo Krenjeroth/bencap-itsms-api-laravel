@@ -16,10 +16,13 @@ return new class extends Migration
             $table->foreignId('profile_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('employee_id')
-              ->constrained()
-              ->cascadeOnDelete();
+            // $table->foreignId('employee_id')
+            //   ->constrained()
+            //   ->cascadeOnDelete();
             $table->foreignId('item_id')->nullable()
+              ->constrained()
+              ->nullOnDelete();
+            $table->foreignId('agency_id')->nullable()
               ->constrained()
               ->nullOnDelete();
             $table->foreignId('it_service_id')
@@ -30,6 +33,7 @@ return new class extends Migration
               ->nullOnDelete();
             $table->foreignId('solution_id')->nullable()->constrained()->nullOnDelete();
             $table->string('ticket_number')->unique();
+            $table->string('full_name')->nullable();
             $table->text('concern');
             $table->string('query_status')->nullable();
             $table->string('request_status')->nullable();
@@ -38,6 +42,7 @@ return new class extends Migration
             $table->timestamp('date')->nullable();
             $table->timestamp('released_at')->nullable();
             $table->string('contact_number')->nullable();
+            $table->string('is_other_agency')->nullable();
             $table->timestamps();
         });
     }

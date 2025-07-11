@@ -17,6 +17,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItServiceController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\SolutionController;
+use App\Http\Controllers\AgencyController;
 use App\Http\Middleware\AuthGates;
 use App\Enums\TicketStatus;
 
@@ -52,6 +53,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::apiResource('tickets', TicketController::class);
 
   Route::apiResource('solutions', SolutionController::class);
+
+  Route::apiResource('agencies', AgencyController::class);
 
   // Custom Routes
 

@@ -70,4 +70,8 @@ class Ticket extends Model
     public function solution() {
         return $this->belongsTo(Solution::class);
     }
+
+    public function agency() {
+      return $this->belongsTo(Agency::class);
+    }
 }

@@ -76,6 +76,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('solutions-select', [SolutionController::class, 'select']);
 
+  Route::get('agencies-select', [AgencyController::class, 'select']);
+
   // Ticket Actions
 
   Route::post('tickets/{ticket}/accept', [TicketController::class, 'accept']);
@@ -93,6 +95,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('employees-search', [EmployeeController::class, 'search']);
 
   Route::get('items-search', [ItemController::class, 'search']);
+
+  Route::get('agencies-search', [AgencyController::class, 'search']);
 
   // Enums
 

@@ -24,10 +24,11 @@ class UpdateTicketRequest extends FormRequest
     {
         return [
             // 'profile_id' => 'required|exists:profiles,id',
-            'employee_id' => 'required|exists:employees,id',
+            // 'employee_id' => 'required|exists:employees,id',
             'item_id' => 'nullable|exists:items,id',
             'item_type_id' => ['required', 'exists:item_types,id'],
             'it_service_id' => 'required|exists:it_services,id',
+            'agency_id' => 'nullable|exists:agencies,id',
             // 'ticket_number' => 'required|string|max:255|unique:it_services,ticket_number',
             'concern' => 'required|string',
             // 'query_status' => ['required', new Enum(QueryStatus::class)],
@@ -41,9 +42,11 @@ class UpdateTicketRequest extends FormRequest
     public function messages(): array {
         return [
             // 'profile_id.required'   => 'The :attribute is required.',
-            'employee_id.required'   => 'The :attribute is required.',
+            // 'employee_id.required'   => 'The :attribute is required.',
             'item_id.required'   => 'The :attribute is required.',
             'it_service_id.required'   => 'The :attribute is required.',
+            'item_type_id.required'   => 'The :attribute is required.',
+            'agency_id.required'   => 'The :attribute is required.',
             // 'ticket_number.required'   => 'The :attribute is required.',
             'concern.required'   => 'The :attribute is required.',
             // 'query_status.required'   => 'The :attribute is required.',

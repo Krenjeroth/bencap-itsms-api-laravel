@@ -77,4 +77,23 @@ class AgencyController extends Controller
           'data' => AgencyResource::collection($agencies)
         ]);
     }
+
+    public function search(Request $request) {
+      $query = $request->get('q');
+      $limit = (int) $request->get('limit', 20);
+      $page = (int) $request->get('page', 1);
+      $offset = ($page - 1) * $limit;
+
+      $agencies = Agency::query()
+          ->when($query, fn($qBuilder) =>
+              $qBuilder->where('name', 'like', "%$query%")->orWhere('abbreviation', 'like', "%$query%")
+          )
+          ->offset($offset)
+          ->limit($limit)
+          ->get();
+
+      return response()->json([
+          'data' => AgencyResource::collection($agencies),
+      ]);
+    }
 }

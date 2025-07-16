@@ -30,7 +30,7 @@ class StoreTicketRequest extends FormRequest
             // 'employee_id' => 'required|exists:employees,id',
             'item_id' => 'nullable|exists:items,id',
             'it_service_id' => 'required|exists:it_services,id',
-            'item_type_id' => ['required', 'exists:item_types,id'],
+            'item_type_id' => 'nullable|exists:item_types,id',
             'agency_id' => 'nullable|exists:agencies,id',
             // 'ticket_number' => 'required|string|max:255|unique:it_services,ticket_number',
             'concern' => 'required|string',
@@ -40,6 +40,8 @@ class StoreTicketRequest extends FormRequest
             'date' => 'nullable|date',
             'service_method' => ['required', new Enum(ServiceMethod::class)],
             'contact_number' => 'nullable|string',
+            'is_other_agency' => 'boolean',
+            'full_name' => 'nullable|string',
         ];
     }
 

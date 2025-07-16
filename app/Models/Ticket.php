@@ -10,11 +10,10 @@ use App\Models\Solution;
 
 class Ticket extends Model
 {
-    protected $with = ['profile', 'employee', 'item', 'itService', 'personnel', 'item_type', 'solution'];
+    protected $with = ['profile', 'employee', 'item', 'itService', 'personnel', 'item_type', 'solution', 'agency'];
 
     protected $fillable = [
         'profile_id',
-        // 'employee_id',
         'item_id',
         'item_type_id',
         'it_service_id',
@@ -29,6 +28,8 @@ class Ticket extends Model
         'date',
         'released_at',
         'contact_number',
+        'full_name',
+        'is_other_agency',
     ];
 
     protected $casts = [

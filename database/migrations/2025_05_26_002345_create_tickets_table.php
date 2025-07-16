@@ -16,9 +16,6 @@ return new class extends Migration
             $table->foreignId('profile_id')
               ->constrained()
               ->cascadeOnDelete();
-            // $table->foreignId('employee_id')
-            //   ->constrained()
-            //   ->cascadeOnDelete();
             $table->foreignId('item_id')->nullable()
               ->constrained()
               ->nullOnDelete();
@@ -42,7 +39,7 @@ return new class extends Migration
             $table->timestamp('date')->nullable();
             $table->timestamp('released_at')->nullable();
             $table->string('contact_number')->nullable();
-            $table->string('is_other_agency')->nullable();
+            $table->boolean('is_other_agency')->default(false);
             $table->timestamps();
         });
     }

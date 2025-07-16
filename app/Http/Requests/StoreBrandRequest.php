@@ -24,6 +24,7 @@ class StoreBrandRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'unique:brands,name'],
+            'status' => ['nullable', 'string', 'max:255', 'in:active,inactive'],
         ];
     }
 

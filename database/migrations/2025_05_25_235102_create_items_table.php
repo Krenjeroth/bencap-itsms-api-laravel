@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('brand_model_id')
               ->constrained()
               ->cascadeOnDelete();
+            $table->foreignId('employee_id')->nullable()
+              ->constrained()
+              ->nullOnDelete();
             $table->string('parent_component')->nullable();
             $table->integer('code')->nullable();
             $table->string('barcode')->nullable();

@@ -24,6 +24,7 @@ class UpdateItemRequest extends FormRequest
     {
         return [
             'brand_model_id' => ['required', 'exists:brand_models,id'],
+            'employee_id' => ['required', 'exists:employees,id'],
             'parent_component' => ['nullable', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:255', 'unique:items,code,' . $this->item->id],
             'barcode' => ['nullable', 'string', 'max:255', 'unique:items,barcode,' . $this->item->id],
@@ -41,8 +42,8 @@ class UpdateItemRequest extends FormRequest
 
     public function attributes(): array {
         return [
-            'item_type_id' => 'Item Type',
             'brand_model_id' => 'Brand Model',
+            'employee_id' => 'Employee',
             'parent_component' => 'Parent Component',
             'code' => 'Code',
             'barcode' => 'Barcode',

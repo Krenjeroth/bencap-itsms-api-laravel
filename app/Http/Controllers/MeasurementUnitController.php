@@ -49,26 +49,26 @@ class MeasurementUnitController extends Controller
       
       $data = $request->validated();
 
-      $item = MeasurementUnit::create($data);
+      $measurementUnit = MeasurementUnit::create($data);
 
-      return new MeasurementUnitResource($item);
+      return new MeasurementUnitResource($measurementUnit);
     }
 
-    public function update(UpdateMeasurementUnitRequest $request, MeasurementUnit $item) {
+    public function update(UpdateMeasurementUnitRequest $request, MeasurementUnit $measurementUnit) {
       // Gate::authorize('item_update');
 
       $data = $request->validated();
 
-      $item->update($data);
+      $measurementUnit->update($data);
 
-      return new MeasurementUnitResource($item);
+      return new MeasurementUnitResource($measurementUnit);
     }
 
-    public function destroy(MeasurementUnit $item) {
+    public function destroy(MeasurementUnit $measurementUnit) {
       // Gate::authorize('item_destroy');
 
-      $item->delete();
+      $measurementUnit->delete();
       
-      return new MeasurementUnitResource($item);
+      return new MeasurementUnitResource($measurementUnit);
     }
 }

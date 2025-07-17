@@ -18,6 +18,7 @@ use App\Http\Controllers\ItServiceController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\SolutionController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\MeasurementUnitController;
 use App\Http\Middleware\AuthGates;
 use App\Enums\TicketStatus;
 
@@ -55,6 +56,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::apiResource('solutions', SolutionController::class);
 
   Route::apiResource('agencies', AgencyController::class);
+
+  Route::apiResource('measurement-units', MeasurementUnitController::class);
 
   // Custom Routes
 

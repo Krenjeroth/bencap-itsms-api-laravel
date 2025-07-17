@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('brand_model_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('employee_id')->nullable()
+            $table->foreignId('employee_id')->comment('Issued To')->nullable()
               ->constrained()
               ->nullOnDelete();
             $table->string('parent_component')->nullable();
@@ -25,8 +25,14 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('serial_number')->nullable();
             $table->string('property_number');
-            $table->string('ics_number')->nullable();
+            $table->string('ics_number')->comment('Inventory Custodian Slip Number')->nullable();
+            $table->string('iar_number')->comment('Inspection and Acceptance Report Number')->nullable();
+            $table->string('po_number')->comment('Purchase Order Number')->nullable();
+            $table->string('control_number')->comment('Pre and Post - Repair Inspection Report Number / Control Number')->nullable();
+            $table->timestamp('date_issued')->nullable();
             $table->timestamp('date_acquired')->nullable();
+            $table->timestamp('date_accepted')->nullable();
+            $table->timestamp('date_installed')->nullable();
             $table->string('ip_address')->nullable();
             $table->string('mac_address')->nullable();
             $table->string('status')->nullable();

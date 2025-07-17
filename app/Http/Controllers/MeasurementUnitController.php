@@ -71,4 +71,12 @@ class MeasurementUnitController extends Controller
       
       return new MeasurementUnitResource($measurementUnit);
     }
+
+    public function select() {
+        $measurementUnits = MeasurementUnit::all();
+
+        return response()->json([
+          'data' => MeasurementUnitResource::collection($measurementUnits)
+        ]);
+    }
 }

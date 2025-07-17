@@ -81,6 +81,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('agencies-select', [AgencyController::class, 'select']);
 
+  Route::get('measurement-units-select', [MeasurementUnitController::class, 'select']);
+
   // Ticket Actions
 
   Route::post('tickets/{ticket}/accept', [TicketController::class, 'accept']);

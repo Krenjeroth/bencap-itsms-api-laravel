@@ -19,6 +19,7 @@ class BrandModelResource extends JsonResource
         return [
           'id' => $this->id,
           'name' => $this->name,
+          'specification' => $this->specification,
           'brand' => BrandResource::make($this->whenLoaded('brand')),
           'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
           'image' => $this->image,

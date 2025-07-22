@@ -24,9 +24,10 @@ class UpdateBrandModelRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'unique:brands,name'],
+            'specification' => ['string', 'max:255', 'nullable'],
             'brand_id' => ['required', 'exists:brands,id'],
             'item_type_id' => ['required', 'exists:item_types,id'],
-            'image' => ['image', 'max:2048'],
+            'image' => ['image', 'max:2048', 'nullable'],
             'year_released' => ['string', 'regex:/^\d{4}$/'],
             'status' => ['string'],
         ];

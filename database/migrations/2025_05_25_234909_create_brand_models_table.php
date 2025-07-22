@@ -20,6 +20,7 @@ return new class extends Migration
               ->constrained()
               ->nullOnDelete();
             $table->string('name');
+            $table->string('specification')->nullable();
             $table->string('image')->nullable();
             $table->string('year_released')->nullable();
             $table->string('status')->nullable();

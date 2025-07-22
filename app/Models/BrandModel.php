@@ -12,6 +12,7 @@ class BrandModel extends Model
         'brand_id',
         'item_type_id',
         'name',
+        'specification',
         'image',
         'year_released',
         'status',

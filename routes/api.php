@@ -106,6 +106,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('agencies-search', [AgencyController::class, 'search']);
 
+  Route::get('inventory-items-search', [InventoryItemController::class, 'search']);
+
   // Enums
 
   Route::get('/query-statuses', fn () =>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\BrandModelResource;
 use App\Http\Resources\EmployeeResource;
+use App\Http\Resources\InventoryItemResource;
 
 class ItemResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class ItemResource extends JsonResource
     {
         return [
           'id' => $this->id,
-          'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
+          'inventory_item' => InventoryItemResource::make($this->whenLoaded('inventory_item')),
           'employee' => EmployeeResource::make($this->whenLoaded('employee')),
           'parent_component' => $this->parent_component,
           'code' => $this->code,

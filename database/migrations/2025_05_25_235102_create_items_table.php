@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('brand_model_id')
+            $table->foreignId('inventory_item_id')->nullable()
               ->constrained()
-              ->cascadeOnDelete();
+              ->nullOnDelete();
             $table->foreignId('employee_id')->comment('Issued To')->nullable()
               ->constrained()
               ->nullOnDelete();

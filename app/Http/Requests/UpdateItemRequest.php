@@ -23,7 +23,7 @@ class UpdateItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'brand_model_id' => ['required', 'exists:brand_models,id'],
+            'inventory_item_id' => ['required', 'exists:inventory_items,id'],
             'employee_id' => ['required', 'exists:employees,id'],
             'parent_component' => ['nullable', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:255', 'unique:items,code,' . $this->item->id],
@@ -48,7 +48,7 @@ class UpdateItemRequest extends FormRequest
 
     public function attributes(): array {
         return [
-            'brand_model_id' => 'Brand Model',
+            'inventory_item_id' => 'Inventory Item',
             'employee_id' => 'Employee',
             'parent_component' => 'Parent Component',
             'code' => 'Code',

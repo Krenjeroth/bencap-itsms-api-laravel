@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateUserRequest;
@@ -22,8 +24,11 @@ class UserController extends Controller
       if($request->has('search')) {
         $search = $request->search;
         $query->where(function ($q) use($search) {
-          $q->where('name', 'LIKE', "%{$search}%")
-          ->orWhere('email', 'LIKE', "%{$search}%");
+          $q->where('username', 'LIKE', "%{$search}%")
+          ->orWhere('email', 'LIKE', "%{$search}%")
+          ->orWhereHas('profile', function ($q4) use($search) {
+                  $q4->where('display_name', 'like', "%$search%");
+                });
         });
       }
 
@@ -56,13 +61,30 @@ class UserController extends Controller
       Gate::authorize('user_store');
       
       $data = $request->validated();
-
-      $user = User::create($data);
-
+      
+      if($request->hasFile('photo_id')) {
+        $path = $request->file('photo_id')->store('users/images/id', 'public');
+        $data['img_path'] = $path;
+      }
+      
+      $user = User::create([
+        'username' => $data['username'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password']),
+      ]);
+      
       if($user){
         $user->roles()->syncWithoutDetaching([$data['role']]);
+        Profile::create([
+          'user_id' => $user->id,
+          'display_name' => $data['display_name'],
+          'designation' => $data['designation'],
+          'gender' => $data['gender'],
+          'name' => $data['name'],
+          'engagement' => 'ready',
+        ]);
       }
-
+      
       return new UserResource($user);
     }
 

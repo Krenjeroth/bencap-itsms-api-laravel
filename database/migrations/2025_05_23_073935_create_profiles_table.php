@@ -16,6 +16,8 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('display_name')->nullable();
+            $table->json('name');
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->text('designation')->nullable();
             $table->text('status')->nullable();
             $table->text('status_text')->nullable();

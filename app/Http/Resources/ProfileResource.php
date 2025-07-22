@@ -18,6 +18,8 @@ class ProfileResource extends JsonResource
           'id' => $this->id,
           'user_id' => $this->user_id,
           'display_name' => $this->display_name,
+          'name' => json_decode($this->name),
+          'gender' => $this->gender,
           'designation' => $this->designation,
           'status' => $this->status, // online, offline
           'status_text' => $this->status_text,

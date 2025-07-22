@@ -23,10 +23,21 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $this->user->id],
-            // 'password' => ['required', 'string'],
-            'role' => ['required', 'exists:roles,id'],
+          // user
+          'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $this->user->id],
+          'role' => ['required', 'exists:roles,id'],
+          // profile
+          'username' => ['required', 'string', 'max:255'],
+          'display_name' => ['required', 'string', 'max:255'],
+          'prefix' => ['string'],
+          'firstname' => ['required', 'string', 'min:3', 'max:50'],
+          'middlename' => ['required', 'string', 'min:3', 'max:50'],
+          'lastname' => ['required', 'string', 'min:3', 'max:50'],
+          'suffix' => ['string'],
+          'name' => ['required', 'json', 'max:1000'],
+          'gender' => ['required', 'string', 'in:male,female,other'],
+          'designation' => ['required', 'string', 'max:255'],
+          'photo_id' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ];
     }
 }

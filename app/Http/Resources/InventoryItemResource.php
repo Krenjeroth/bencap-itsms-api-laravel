@@ -20,7 +20,7 @@ class InventoryItemResource extends JsonResource
           'id' => $this->id,
           'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
           'measurement_unit' => MeasurementUnitResource::make($this->whenLoaded('measurement_unit')),
-          'description' => $this->description,
+          'description' => $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name,
           'item_number' => $this->item_number,
           'stock_number' => $this->stock_number,
           'quantity' => $this->quantity,

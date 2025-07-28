@@ -41,4 +41,10 @@ class StoreUserRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
+
+    public function attributes() {
+      return [
+        'photo_id' => 'Photo ID',
+      ];
+    }
 }

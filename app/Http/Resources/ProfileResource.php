@@ -24,7 +24,7 @@ class ProfileResource extends JsonResource
           'status' => $this->status, // online, offline
           'status_text' => $this->status_text,
           'engagement' => $this->engagement, // ready, 
-          'img_path' => $this->img_path,
+          'img_path' => $this->img_path ? asset("storage/{$this->img_path}") : null,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
         ];

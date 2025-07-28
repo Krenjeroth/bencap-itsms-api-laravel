@@ -78,10 +78,11 @@ class UserController extends Controller
         Profile::create([
           'user_id' => $user->id,
           'display_name' => $data['display_name'],
-          'designation' => $data['designation'],
-          'gender' => $data['gender'],
           'name' => $data['name'],
+          'gender' => $data['gender'],
+          'designation' => $data['designation'],
           'engagement' => 'ready',
+          'img_path' => $data['img_path'],
         ]);
       }
       
@@ -93,11 +94,38 @@ class UserController extends Controller
 
       $data = $request->validated();
 
-      $user->update($data);
+      $user_data = [];
+      $profile_data = [];
+      $changedData = [];
+      foreach ($data as $key => $value) {
+        if ($user->$key !== $value) {
+          $changedData[$key] = $value;
+          if($key === 'email' || $key === 'username' || $key === 'role') {
+            $user_data[$key] = $value;
+          } else if($key === 'display_name' || $key === 'name' || $key === 'gender' || $key === 'designation') {
+            $profile_data[$key] = $value;
+          }
+        }
+      }
 
-      // Replace the user's current role with the new one
-      if ($user) {
-          $user->roles()->sync([$data['role']]); // Detach existing and attach new
+      if (!empty($changedData)) {
+        if($request->hasFile('photo_id')) {
+          $storage_public = Storage::disk('public');
+          if ($user->profile->img_path && $storage_public->exists($user->profile->img_path)) {
+            $storage_public->delete($user->profile->img_path);
+          }
+
+          $path = $request->file('photo_id')->store('users/images/id', 'public');
+          $profile_data['img_path'] = $path;
+        }
+
+        $user->update($user_data);
+      
+        if($user){
+          $user->roles()->sync([$data['role']]);
+
+          Profile::where('user_id', $user->id)->update($profile_data);
+        }
       }
 
       return new UserResource($user);

@@ -12,11 +12,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-          'id' => '88964338-6721-4816-be39-9a9afbe8df95',
-            'username' => 'SysAdmin',
-            'email' => 'admin@itsms.com',
-        ]);
+        // User::factory()->create([
+        //   'id' => '88964338-6721-4816-be39-9a9afbe8df95',
+        //     'username' => 'SysAdmin',
+        //     'email' => 'admin@itsms.com',
+        // ]);
 
         User::factory()->create([
           'id' => 'cf6f9ac2-1cd4-43a8-bfba-acdc431282f9',

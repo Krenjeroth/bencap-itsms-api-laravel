@@ -13,7 +13,7 @@ class RoleUserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        User::find('88964338-6721-4816-be39-9a9afbe8df95')->roles()->attach(1); // System Admin - 1 = System Administrator
+        // User::find('88964338-6721-4816-be39-9a9afbe8df95')->roles()->attach(1); // System Admin - 1 = System Administrator
         User::find('cf6f9ac2-1cd4-43a8-bfba-acdc431282f9')->roles()->attach(2); // KrenjerJS - 2 = Personnel
         User::find('3292e07c-a2a6-40bf-8070-0bb9e76292d6')->roles()->attach(2); // BrianBM - 2 = Personnel
         User::find('5ea07171-e126-4142-9997-9ec24e180e53')->roles()->attach(2); // RaeBC - 2 = Personnel

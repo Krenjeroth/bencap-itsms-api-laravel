@@ -63,7 +63,7 @@ class UserController extends Controller
       $data = $request->validated();
       
       if($request->hasFile('photo_id')) {
-        $path = $request->file('photo_id')->store('users/images/id', 'public');
+        $path = $request->file('photo_id')->store('images/users/personnel', 'public');
         $data['img_path'] = $path;
       }
       

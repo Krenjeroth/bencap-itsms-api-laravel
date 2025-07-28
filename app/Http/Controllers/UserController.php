@@ -115,7 +115,7 @@ class UserController extends Controller
             $storage_public->delete($user->profile->img_path);
           }
 
-          $path = $request->file('photo_id')->store('users/images/id', 'public');
+          $path = $request->file('photo_id')->store('images/users/personnel', 'public');
           $profile_data['img_path'] = $path;
         }
 

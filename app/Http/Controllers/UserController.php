@@ -61,6 +61,7 @@ class UserController extends Controller
       Gate::authorize('user_store');
       
       $data = $request->validated();
+      $data['img_path'] = null;
       
       if($request->hasFile('photo_id')) {
         $path = $request->file('photo_id')->store('images/users/personnel', 'public');

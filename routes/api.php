@@ -110,6 +110,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('items-search', [ItemController::class, 'search']);
 
+  Route::get('inventories-search', [InventoryController::class, 'search']);
+
   Route::get('agencies-search', [AgencyController::class, 'search']);
 
   Route::get('inventory-items-search', [InventoryItemController::class, 'search']);

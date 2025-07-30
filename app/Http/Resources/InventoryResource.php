@@ -23,7 +23,7 @@ class InventoryResource extends JsonResource
           'parent_component' => $this->parent_component,
           'code' => $this->code,
           'barcode' => $this->barcode,
-          'description' => $this->description,
+          'description' => $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name,
           'serial_number' => $this->serial_number,
           'property_number' => $this->property_number,
           'ics_number' => $this->ics_number,

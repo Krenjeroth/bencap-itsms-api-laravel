@@ -20,6 +20,7 @@ use App\Http\Controllers\SolutionController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\MeasurementUnitController;
 use App\Http\Controllers\InventoryItemController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Middleware\AuthGates;
 use App\Enums\TicketStatus;
 
@@ -49,6 +50,8 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::apiResource('common-problems', CommonProblemController::class);
 
   Route::apiResource('items', ItemController::class); 
+
+  Route::apiResource('inventories', InventoryController::class); 
 
   Route::apiResource('it-services', ItServiceController::class);
 

@@ -28,6 +28,9 @@ class UpdateItSupplyRequest extends FormRequest
             'description' => 'nullable|string',
             'item_number' => 'nullable|string',
             'stock_number' => 'nullable|string',
+            'ics_number' => ['nullable', 'string', 'max:255'],
+            'iar_number' => ['nullable', 'string', 'max:255'],
+            'po_number' => ['nullable', 'string', 'max:255'],
             'quantity' => 'required|numeric',
         ];
     }

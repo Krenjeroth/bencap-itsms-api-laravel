@@ -20,7 +20,9 @@ class ItSupplyController extends Controller
         $query->where(function ($q) use($search) {
           $q->where('item_number', 'LIKE', "%{$search}%")
           ->orWhere('stock_number', 'LIKE', "%{$search}%")
-          ->orWhere('description', 'LIKE', "%{$search}%")
+          ->orWhere('ics_number', 'LIKE', "%{$search}%")
+          ->orWhere('iar_number', 'LIKE', "%{$search}%")
+          ->orWhere('po_number', 'LIKE', "%{$search}%")
           ->orWhereHas('brand_model', function ($q2) use($search) {
             $q2->where('name', 'LIKE', "%{$search}%")
             ->orWhereHas('brand', function ($q3) use($search) {

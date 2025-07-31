@@ -14,6 +14,9 @@ class ItSupply extends Model
         'description',
         'item_number',
         'stock_number',
+        'ics_number',
+        'iar_number',
+        'po_number',
         'quantity',
     ];
 

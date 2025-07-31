@@ -22,6 +22,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('item_number')->nullable();
             $table->string('stock_number')->nullable();
+            $table->string('ics_number')->comment('Inventory Custodian Slip Number')->nullable();
+            $table->string('iar_number')->comment('Inspection and Acceptance Report Number')->nullable();
+            $table->string('po_number')->comment('Purchase Order Number')->nullable();
             $table->integer('quantity')->default(0);
             $table->timestamps();
         });

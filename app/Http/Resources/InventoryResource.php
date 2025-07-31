@@ -16,6 +16,13 @@ class InventoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+        $description = $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name;
+
+        $employee_full_name = $this->employee ? $this->employee->full_name : null;
+
+        $employee_full_name_formatted = $employee_full_name ? ' - ' . $employee_full_name : '';
+
         return [
           'id' => $this->id,
           'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
@@ -23,9 +30,11 @@ class InventoryResource extends JsonResource
           'parent_component' => $this->parent_component,
           'code' => $this->code,
           'barcode' => $this->barcode,
-          'description' => $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name,
+          'description' => $description,
+          // 'description' => $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name,
           'serial_number' => $this->serial_number,
           'property_number' => $this->property_number,
+          'inventory_option_attribute' => $this->property_number . ' (' . $description . ')' . $employee_full_name_formatted,
           'ics_number' => $this->ics_number,
           'iar_number' => $this->iar_number,
           'po_number' => $this->po_number,

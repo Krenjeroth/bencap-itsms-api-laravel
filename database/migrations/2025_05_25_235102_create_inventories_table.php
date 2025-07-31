@@ -25,9 +25,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('serial_number')->nullable();
             $table->string('property_number');
-            $table->string('ics_number')->comment('Inventory Custodian Slip Number')->nullable();
-            $table->string('iar_number')->comment('Inspection and Acceptance Report Number')->nullable();
-            $table->string('po_number')->comment('Purchase Order Number')->nullable();
             $table->string('control_number')->comment('Pre and Post - Repair Inspection Report Number / Control Number')->nullable();
             $table->timestamp('date_issued')->nullable();
             $table->timestamp('date_acquired')->nullable();

@@ -21,7 +21,6 @@ class InventoryController extends Controller
           $q->where('property_number', 'LIKE', "%{$search}%")
           ->orWhere('parent_component', 'LIKE', "%{$search}%")
           ->orWhere('serial_number', 'LIKE', "%{$search}%")
-          ->orWhere('ics_number', 'LIKE', "%{$search}%")
           ->orWhere('description', 'LIKE', "%{$search}%");
         });
       }

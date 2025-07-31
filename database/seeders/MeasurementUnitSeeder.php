@@ -15,6 +15,7 @@ class MeasurementUnitSeeder extends Seeder
         $measurement_units = [
           ['name' => 'Set' , 'abbreviation' => 'set', 'description' => 'Grouped items used together'],
           ['name' => 'Piece(s)' , 'abbreviation' => 'pcs', 'description' => 'Countable items'],
+          ['name' => 'Unit(s)' , 'abbreviation' => 'unit', 'description' => ''],
         ];
 
         MeasurementUnit::insert($measurement_units);

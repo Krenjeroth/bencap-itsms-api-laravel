@@ -28,7 +28,7 @@ class StoreTicketRequest extends FormRequest
         return [
             'profile_id' => 'required|exists:profiles,id',
             // 'employee_id' => 'required|exists:employees,id',
-            'item_id' => 'nullable|exists:items,id',
+            'inventory_id' => 'nullable|exists:inventories,id',
             'it_service_id' => 'required|exists:it_services,id',
             'item_type_id' => 'nullable|exists:item_types,id',
             'agency_id' => 'nullable|exists:agencies,id',
@@ -49,7 +49,7 @@ class StoreTicketRequest extends FormRequest
         return [
             'profile_id.required'   => 'The :attribute is required.',
             // 'employee_id.required'   => 'The :attribute is required.',
-            'item_id.required'   => 'The :attribute is required.',
+            'inventory_id.required'   => 'The :attribute is required.',
             'it_service_id.required'   => 'The :attribute is required.',
             'item_type_id.required'   => 'The :attribute is required.',
             'agency_id.required'   => 'The :attribute is required.',

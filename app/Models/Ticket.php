@@ -10,11 +10,11 @@ use App\Models\Solution;
 
 class Ticket extends Model
 {
-    protected $with = ['profile', 'employee', 'item', 'itService', 'personnel', 'item_type', 'solution', 'agency'];
+    protected $with = ['profile', 'employee', 'inventory', 'itService', 'personnel', 'item_type', 'solution', 'agency'];
 
     protected $fillable = [
         'profile_id',
-        'item_id',
+        'inventory_id',
         'item_type_id',
         'it_service_id',
         'agency_id',
@@ -53,8 +53,8 @@ class Ticket extends Model
       return $this->belongsTo(Employee::class);
     }
 
-    public function item() {
-      return $this->belongsTo(Item::class);
+    public function inventory() {
+      return $this->belongsTo(Inventory::class);
     }
     
     public function itService() {

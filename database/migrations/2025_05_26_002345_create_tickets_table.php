@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('profile_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('item_id')->nullable()
+            $table->foreignId('inventory_id')->nullable()
               ->constrained()
               ->nullOnDelete();
             $table->foreignId('agency_id')->nullable()

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Enums\TicketStatus;
 use App\Enums\ServiceMethod;
 use Illuminate\Http\Request;
-use App\Http\Resources\ItemResource;
+use App\Http\Resources\InventoryResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ProfileResource;
 use App\Http\Resources\EmployeeResource;
@@ -35,7 +35,7 @@ class TicketResource extends JsonResource
         return [
           'id' => $this->id,
           'profile' => ProfileResource::make($this->whenLoaded('profile')),
-          'item' => ItemResource::make($this->whenLoaded('item')),
+          'inventory' => InventoryResource::make($this->whenLoaded('inventory')),
           'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
           'it_service' => ItServiceResource::make($this->whenLoaded('itService')),
           'personnel' => ProfileResource::collection($this->whenLoaded('personnel')),

@@ -36,15 +36,15 @@ class InventoryController extends Controller
       }
 
       // Paginate with customizable per-page count
-      $items = $query->paginate($request->input('per_page', 5))->appends($request->query());
+      $inventories = $query->paginate($request->input('per_page', 5))->appends($request->query());
 
       return response()->json([
-          'data' => InventoryResource::collection($items),
+          'data' => InventoryResource::collection($inventories),
           'meta' => [
-              'total' => $items->total(),
-              'per_page' => $items->perPage(),
-              'current_page' => $items->currentPage(),
-              'last_page' => $items->lastPage(),
+              'total' => $inventories->total(),
+              'per_page' => $inventories->perPage(),
+              'current_page' => $inventories->currentPage(),
+              'last_page' => $inventories->lastPage(),
           ]
       ]);
     }
@@ -54,9 +54,9 @@ class InventoryController extends Controller
       
       $data = $request->validated();
 
-      $item = Inventory::create($data);
+      $inventory = Inventory::create($data);
 
-      return new InventoryResource($item);
+      return new InventoryResource($inventory);
     }
 
     public function update(UpdateInventoryRequest $request, Inventory $inventory) {
@@ -83,7 +83,7 @@ class InventoryController extends Controller
       $page = (int) $request->get('page', 1);
       $offset = ($page - 1) * $limit;
 
-      $items = Inventory::query()
+      $inventories = Inventory::query()
           ->when($query, fn($qBuilder) =>
               $qBuilder->where('property_number', 'like', "%$query%")
           )
@@ -92,7 +92,7 @@ class InventoryController extends Controller
           ->get();
 
       return response()->json([
-          'data' => InventoryResource::collection($items),
+          'data' => InventoryResource::collection($inventories),
       ]);
     }
 }

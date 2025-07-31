@@ -13,13 +13,11 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandModelController;
 use App\Http\Controllers\ItemTypeController;
 use App\Http\Controllers\CommonProblemController;
-use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItServiceController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\SolutionController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\MeasurementUnitController;
-use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ItSupplyController;
 use App\Http\Middleware\AuthGates;
@@ -50,8 +48,6 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::apiResource('common-problems', CommonProblemController::class);
 
-  Route::apiResource('items', ItemController::class); 
-
   Route::apiResource('inventories', InventoryController::class); 
 
   Route::apiResource('it-services', ItServiceController::class);
@@ -63,8 +59,6 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::apiResource('agencies', AgencyController::class);
 
   Route::apiResource('measurement-units', MeasurementUnitController::class);
-
-  Route::apiResource('inventory-items', InventoryItemController::class);
 
   Route::apiResource('it-supplies', ItSupplyController::class);
 
@@ -108,13 +102,11 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('employees-search', [EmployeeController::class, 'search']);
 
-  Route::get('items-search', [ItemController::class, 'search']);
-
   Route::get('inventories-search', [InventoryController::class, 'search']);
 
   Route::get('agencies-search', [AgencyController::class, 'search']);
 
-  Route::get('inventory-items-search', [InventoryItemController::class, 'search']);
+  Route::get('it-supplies-search', [ItSupplyController::class, 'search']);
 
   // Enums
 

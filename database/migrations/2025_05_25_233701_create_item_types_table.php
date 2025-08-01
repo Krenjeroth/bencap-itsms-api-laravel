@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('classification')->nullable();
             $table->string('purpose')->nullable();
             $table->string('type');
+            $table->boolean('is_main_asset')->default(false);
+            $table->boolean('is_component')->default(false);
             $table->string('status')->nullable();
             $table->timestamps();
         });

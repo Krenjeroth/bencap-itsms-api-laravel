@@ -21,9 +21,14 @@ return new class extends Migration
               ->nullOnDelete();
             $table->string('name')->nullable();
             $table->string('specification')->nullable();
+            $table->json('specifications_json')->nullable();
+            $table->string('part_number')->nullable();
+
+            // might remove or delete later
+            $table->string('status')->nullable();
             $table->string('image')->nullable();
             $table->string('year_released')->nullable();
-            $table->string('status')->nullable();
+
             $table->timestamps();
         });
     }

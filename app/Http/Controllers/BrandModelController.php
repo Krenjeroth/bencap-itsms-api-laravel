@@ -18,7 +18,8 @@ class BrandModelController extends Controller
       if($request->has('search')) {
         $search = $request->search;
         $query->where(function ($q) use($search) {
-          $q->where('name', 'LIKE', "%{$search}%");
+          $q->where('specification', 'LIKE', "%{$search}%");
+          $q->orWhere('name', 'LIKE', "%{$search}%");
         });
       }
 
@@ -78,7 +79,7 @@ class BrandModelController extends Controller
 
       $brand_models = BrandModel::query()
           ->when($query, fn($qBuilder) =>
-              $qBuilder->where('name', 'like', "%$query%")
+              $qBuilder->where('specification', 'like', "%$query%")->orWhere('name', 'like', "%$query%")
           )
           ->offset($offset)
           ->limit($limit)

@@ -23,7 +23,8 @@ class StoreBrandModelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:brands,name'],
+            // 'name' => ['required', 'string', 'max:255', 'unique:brands,name'],
+            'name' => ['nullable', 'string', 'max:255'],
             'specification' => ['string', 'max:255', 'nullable'],
             'brand_id' => ['required', 'exists:brands,id'],
             'item_type_id' => ['required', 'exists:item_types,id'],

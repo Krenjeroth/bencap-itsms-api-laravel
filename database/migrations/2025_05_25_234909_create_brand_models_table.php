@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('item_type_id')->nullable()
               ->constrained()
               ->nullOnDelete();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('specification')->nullable();
             $table->string('image')->nullable();
             $table->string('year_released')->nullable();

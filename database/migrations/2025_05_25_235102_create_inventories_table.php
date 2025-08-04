@@ -17,6 +17,12 @@ return new class extends Migration
             $table->foreignId('employee_id')->comment('Issued To')->nullable()
               ->constrained()
               ->nullOnDelete();
+            $table->foreignId('item_type_id')->nullable() // The general classification of the physical asset.
+              ->constrained()
+              ->nullOnDelete();
+            $table->foreignId('brand_model_id')->nullable() // The specific product model for this type of physical asset, if applicable.
+              ->constrained()
+              ->nullOnDelete()->comment('This links a primary asset (like an Acer SA272Q Monitor, an Epson L360 Printer, or an APC BX625CI-MS UPS) to its specific Brand Model entry. For a generic assembled Desktop/CPU, this might remain NULL');
             $table->string('ip_address')->nullable();
             $table->string('mac_address')->nullable();
             $table->text('remarks')->nullable();
@@ -31,11 +37,8 @@ return new class extends Migration
 
             $table->string('property_number');
             $table->timestamp('date_acquired')->nullable();
+            $table->timestamp('warranty_expiration_date')->nullable();
             $table->string('serial_number')->nullable()->comment('For peripherals like Monitors, Printers, UPS.');
-
-            $table->foreignId('brand_model_id')->nullable()
-              ->constrained()
-              ->nullOnDelete()->comment('This links a primary asset (like an Acer SA272Q Monitor, an Epson L360 Printer, or an APC BX625CI-MS UPS) to its specific Brand Model entry. For a generic assembled Desktop/CPU, this might remain NULL');
             $table->string('status')->nullable()->comment('Deployed, In Storage, Repair, Disposed');
 
             // $table->string('parent_component')->nullable();

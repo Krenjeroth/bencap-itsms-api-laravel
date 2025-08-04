@@ -12,6 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inventory_accessories', function (Blueprint $table) {
+            // Peripherals that are used with a Primary Asset but don't have their own tag (like a generic mouse)
+            // Mapping Inventories to Brand Model for non-tagged accessories
             $table->id();
             $table->foreignId('desktop_inventory_id')->nullable()
               ->constrained('inventories')
@@ -21,6 +23,7 @@ return new class extends Migration
               ->nullOnDelete();
             $table->text('notes')->nullable();
             $table->timestamps();
+            // $table->unique(['desktop_inventory_id', 'brand_model_id']); // One of each type of accessory per desktop
 
             // This maps to my AssetAccessories.
 

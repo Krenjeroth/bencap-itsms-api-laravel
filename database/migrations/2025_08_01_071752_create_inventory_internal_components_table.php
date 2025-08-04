@@ -12,6 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inventory_internal_components', function (Blueprint $table) {
+            // Parts that belong inside a Primary Asset (like a Desktop) and don't have their own tag
+            // Mapping your existing Inventories to Brand Model for internal parts
+            // item_type_id is 'Desktop/CPU'
             $table->id();
             $table->foreignId('desktop_inventory_id')->nullable()
               ->constrained('inventories')
@@ -20,11 +23,10 @@ return new class extends Migration
               ->constrained()
               ->nullOnDelete();
             $table->string('specific_serial_number')->nullable();
-
-            $table->string('property_number')->nullable();
+            $table->string('slot')->nullable();
             $table->integer('quantity')->default(1);
-            $table->timestamp('date_acquired')->nullable();
             $table->text('notes')->nullable();
+            // $table->unique(['desktop_asset_id', 'component_model_id', 'slot']); // Prevent duplicate component in same slot
 
             $table->timestamps();
         });

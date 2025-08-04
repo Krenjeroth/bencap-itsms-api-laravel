@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('brand_id')
               ->constrained()
               ->cascadeOnDelete();
-            $table->foreignId('item_type_id')->nullable()
+            $table->foreignId('item_type_id')->nullable() // The general classification of this product model in your catalog.
               ->constrained()
               ->nullOnDelete();
             $table->string('name')->nullable();

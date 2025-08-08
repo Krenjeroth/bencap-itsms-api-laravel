@@ -82,4 +82,23 @@ class ItemTypeController extends Controller
           'data' => ItemTypeResource::collection($item_types)
         ]);
     }
+
+// id	name	is_main_asset	is_component
+// 1	Desktop/CPU	TRUE	FALSE
+// 2	Monitor	TRUE	TRUE
+// 3	Printer	TRUE	TRUE
+// 4	UPS	TRUE	TRUE
+// 5	Processor	FALSE	TRUE
+// 6	Motherboard	FALSE	TRUE
+// 7	Memory Module	FALSE	TRUE
+// 8	Storage	FALSE	TRUE
+// 9	Video/Graphics Card	FALSE	TRUE
+// 10	CD-ROM Optical Drive	FALSE	TRUE
+// 11	Mouse	FALSE	TRUE
+// 12	Keyboard	FALSE	TRUE
+// 13	Speaker	FALSE	TRUE
+// 14	Webcam	FALSE	TRUE
+// 15	Operating System	FALSE	FALSE
+// 16	Office Suite	FALSE	FALSE
+// 17	Antivirus	FALSE	FALSE
 }

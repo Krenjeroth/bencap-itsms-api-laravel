@@ -16,7 +16,7 @@ return new class extends Migration
             // Mapping your existing Inventories to Brand Model for internal parts
             // item_type_id is 'Desktop/CPU'
             $table->id();
-            $table->foreignId('desktop_inventory_id')->nullable()
+            $table->foreignId('inventory_id')->nullable()
               ->constrained('inventories')
               ->cascadeOnDelete()->comment('Inventories where item_type_id is Desktop/CPU');
             $table->foreignId('brand_model_id')->nullable()

@@ -16,16 +16,16 @@ return new class extends Migration
             // Linking Inventories records to other Inventories records
             $table->id();
             
-            $table->foreignId('source_inventory_id')->nullable()
+            $table->foreignId('source_asset_id')->nullable()
               ->constrained('inventories')
               ->cascadeOnDelete()->comment('Inventories typically the Desktop/CPU'); // (FK to Inventories.id, typically the Desktop)
-            $table->foreignId('target_inventory_id')->nullable()
+            $table->foreignId('target_asset_id')->nullable()
               ->constrained('inventories')
               ->cascadeOnDelete()->comment('Inventories typically the Monitor, Printer, UPS, etc.'); // (FK to Inventories.id, typically the Monitor, Printer, UPS)
             $table->string('association_type')->nullable()->comment('connected_to, uses');
             $table->string('connection_details')->nullable();
             $table->timestamps();
-            $table->unique(['source_inventory_id', 'target_inventory_id']); // Prevent duplicate associations
+            $table->unique(['source_asset_id', 'target_asset_id']); // Prevent duplicate associations
         });
     }
 

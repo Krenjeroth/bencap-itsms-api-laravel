@@ -20,6 +20,7 @@ class BrandModelResource extends JsonResource
           'id' => $this->id,
           'name' => $this->name,
           'specification' => $this->specification,
+          'specifications_json' => $this->specifications_json,
           'brand' => BrandResource::make($this->whenLoaded('brand')),
           'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
           'image' => $this->image,

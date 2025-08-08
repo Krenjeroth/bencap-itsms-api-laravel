@@ -95,4 +95,34 @@ class InventoryController extends Controller
           'data' => InventoryResource::collection($inventories),
       ]);
     }
+
+    public function searchMainAsset(Request $request) {
+      $query = $request->get('q');
+      $limit = (int) $request->get('limit', 20);
+      $page = (int) $request->get('page', 1);
+      $offset = ($page - 1) * $limit;
+
+      $inventories = Inventory::query()
+          ->when($query, fn($qBuilder) =>
+              $qBuilder->where('item_type.is_main_asset', true)->where('item_type.is_component', false)->where('property_number', 'like', "%$query%")
+              // ->orWhere('stock_number', 'like', "%$query%")
+              // ->orWhere('description', 'like', "%$query%")
+              // ->orWhereHas('brand_model', function ($q2) use($query) {
+              //   $q2->where('name', 'like', "%$query%")
+              //   ->orWhereHas('brand', function ($q3) use($query) {
+              //     $q3->where('name', 'like', "%$query%");
+              //   })
+              //   ->orWhereHas('item_type', function ($q4) use($query) {
+              //     $q4->where('type', 'like', "%$query%");
+              //   });
+              // })
+          )
+          ->offset($offset)
+          ->limit($limit)
+          ->get();
+
+      return response()->json([
+          'data' => InventoryResource::collection($inventories),
+      ]);
+    }
 }

@@ -108,6 +108,11 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('it-supplies-search', [ItSupplyController::class, 'search']);
 
+  Route::get('brand-models-search', [BrandModelController::class, 'search']);
+
+  Route::get('inventories-main-asset-search', [InventoryController::class, 'searchMainAsset']);
+
+
   // Enums
 
   Route::get('/query-statuses', fn () =>

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\InventoryResource;
+use App\Models\InventoryInternalComponent;
 use App\Http\Requests\StoreInventoryRequest;
 use App\Http\Requests\UpdateInventoryRequest;
-use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
@@ -53,8 +55,18 @@ class InventoryController extends Controller
       // Gate::authorize('item_store');
       
       $data = $request->validated();
-
+      
       $inventory = Inventory::create($data);
+
+      if ((int) $inventory->item_type_id === 1) {
+          foreach ($data['internal_components'] ?? [] as $component) {
+              InventoryInternalComponent::create([
+                  'inventory_id'   => $inventory->id,
+                  'brand_model_id' => $component['brand_model']['id'],
+                  'quantity'       => $component['quantity'],
+              ]);
+          }
+      }
 
       return new InventoryResource($inventory);
     }

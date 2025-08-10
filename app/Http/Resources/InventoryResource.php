@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\BrandModelResource;
 use App\Http\Resources\EmployeeResource;
+use App\Http\Resources\ItemTypeResource;
 
 class InventoryResource extends JsonResource
 {
@@ -17,7 +18,7 @@ class InventoryResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $description = $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name;
+        // $description = $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name;
 
         $employee_full_name = $this->employee ? $this->employee->full_name : null;
 
@@ -25,24 +26,26 @@ class InventoryResource extends JsonResource
 
         return [
           'id' => $this->id,
-          'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
           'employee' => EmployeeResource::make($this->whenLoaded('employee')),
-          'parent_component' => $this->parent_component,
-          'code' => $this->code,
-          'barcode' => $this->barcode,
-          'description' => $description,
-          // 'description' => $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name,
-          'serial_number' => $this->serial_number,
-          'property_number' => $this->property_number,
-          'inventory_option_attribute' => $this->property_number . ' (' . $description . ')' . $employee_full_name_formatted,
-          'date_issued' => $this->date_issued,
-          'date_acquired' => $this->date_acquired,
-          'date_accepted' => $this->date_accepted,
-          'date_installed' => $this->date_installed,
+          'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
+          'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
           'ip_address' => $this->ip_address,
           'mac_address' => $this->mac_address,
+          'remarks' => $this->remarks,
+          'operating_system_name' => $this->operating_system_name,
+          'os_license_number' => $this->os_license_number,
+          'anti_virus_name' => $this->anti_virus_name,
+          'anti_virus_license_number' => $this->anti_virus_license_number,
+          'microsoft_office_name' => $this->microsoft_office_name,
+          'ms_office_license_number' => $this->ms_office_license_number,
+          'other_installed_applications' => $this->other_installed_applications,
+          'property_number' => $this->property_number,
+          'date_acquired' => $this->date_acquired,
+          'warranty_expiration_date' => $this->warranty_expiration_date,
+          'serial_number' => $this->serial_number,
           'status' => $this->status,
-          'inventory_type' => $this->inventory_type,
+
+          // 'parent_component' => $this->parent_component,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
         ];

@@ -21,9 +21,9 @@ class InventoryController extends Controller
         $search = $request->search;
         $query->where(function ($q) use($search) {
           $q->where('property_number', 'LIKE', "%{$search}%")
-          ->orWhere('parent_component', 'LIKE', "%{$search}%")
-          ->orWhere('serial_number', 'LIKE', "%{$search}%")
-          ->orWhere('description', 'LIKE', "%{$search}%");
+          // ->orWhere('parent_component', 'LIKE', "%{$search}%")
+          ->orWhere('serial_number', 'LIKE', "%{$search}%");
+          // ->orWhere('description', 'LIKE', "%{$search}%");
         });
       }
 
@@ -57,15 +57,15 @@ class InventoryController extends Controller
       $data = $request->validated();
       
       $inventory = Inventory::create($data);
-
-      if ((int) $inventory->item_type_id === 1) {
-          foreach ($data['internal_components'] ?? [] as $component) {
-              InventoryInternalComponent::create([
-                  'inventory_id'   => $inventory->id,
-                  'brand_model_id' => $component['brand_model']['id'],
-                  'quantity'       => $component['quantity'],
-              ]);
-          }
+      
+      if ((int) $data['item_type_id'] === 1) {
+        foreach ($data['internal_components'] ?? [] as $component) {
+          InventoryInternalComponent::create([
+              'inventory_id'   => $inventory->id,
+              'brand_model_id' => $component['brand_model']['id'],
+              'quantity'       => $component['quantity'],
+          ]);
+        }
       }
 
       return new InventoryResource($inventory);

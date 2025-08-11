@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\BrandModelResource;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\ItemTypeResource;
+use App\Http\Resources\InventoryInternalComponentResource;
 
 class InventoryResource extends JsonResource
 {
@@ -29,6 +30,10 @@ class InventoryResource extends JsonResource
           'employee' => EmployeeResource::make($this->whenLoaded('employee')),
           'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
           'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
+          'inventory' => InventoryResource::make($this->whenLoaded('parent_component')),
+          
+          'internal_components' => InventoryInternalComponentResource::collection($this->whenLoaded('internal_components')),
+
           'ip_address' => $this->ip_address,
           'mac_address' => $this->mac_address,
           'remarks' => $this->remarks,

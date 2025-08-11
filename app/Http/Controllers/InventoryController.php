@@ -116,7 +116,10 @@ class InventoryController extends Controller
 
       $inventories = Inventory::query()
           ->when($query, fn($qBuilder) =>
-              $qBuilder->where('item_type.is_main_asset', true)->where('item_type.is_component', false)->where('property_number', 'like', "%$query%")
+              $qBuilder->where('property_number', 'like', "%$query%")
+              ->whereHas('item_type', function ($q4) {
+                  $q4->where('is_main_inventory', true)->where('is_component', false);
+                })
               // ->orWhere('stock_number', 'like', "%$query%")
               // ->orWhere('description', 'like', "%$query%")
               // ->orWhereHas('brand_model', function ($q2) use($query) {

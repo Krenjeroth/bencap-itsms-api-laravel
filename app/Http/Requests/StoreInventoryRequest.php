@@ -26,6 +26,7 @@ class StoreInventoryRequest extends FormRequest
             'employee_id' => ['nullable', 'exists:employees,id'],
             'item_type_id' => ['nullable', 'exists:item_types,id'],
             'brand_model_id' => ['nullable', 'exists:brand_models,id'],
+            'parent_component_id' => ['nullable', 'exists:inventories,id'],
             
             'ip_address' => ['nullable', 'string', 'max:255'],
             'mac_address' => ['nullable', 'string', 'max:255'],
@@ -60,15 +61,13 @@ class StoreInventoryRequest extends FormRequest
         return [
             'brand_model_id' => 'Brand Model',
             'employee_id' => 'Employee',
-            'parent_component' => 'Parent Component',
+            'parent_component_id' => 'Parent Component',
             'property_number' => 'Property Number',
-            'date_issued' => 'Date Issued',
             'date_acquired' => 'Date Acquired',
-            'date_accepted' => 'Date Accepted',
-            'date_installed' => 'Date Installed',
+            'warranty_expiration_date' => 'Warranty Expiration Date',
             'ip_address' => 'IP Address',
             'mac_address' => 'MAC Address',
-            'inventory_type' => 'Inventory Type',
+
             'status' => 'Status',
         ];
     }

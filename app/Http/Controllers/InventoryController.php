@@ -163,27 +163,22 @@ class InventoryController extends Controller
       $page = (int) $request->get('page', 1);
       $offset = ($page - 1) * $limit;
 
+      $exclude_id = $request->get('exclude_id');
+
       $inventories = Inventory::query()
-          ->when($query, fn($qBuilder) =>
-              $qBuilder->where('property_number', 'like', "%$query%")
-              ->whereHas('item_type', function ($q4) {
-                  $q4->where('is_main_inventory', true)->where('is_component', false);
-                })
-              // ->orWhere('stock_number', 'like', "%$query%")
-              // ->orWhere('description', 'like', "%$query%")
-              // ->orWhereHas('brand_model', function ($q2) use($query) {
-              //   $q2->where('name', 'like', "%$query%")
-              //   ->orWhereHas('brand', function ($q3) use($query) {
-              //     $q3->where('name', 'like', "%$query%");
-              //   })
-              //   ->orWhereHas('item_type', function ($q4) use($query) {
-              //     $q4->where('type', 'like', "%$query%");
-              //   });
-              // })
-          )
-          ->offset($offset)
-          ->limit($limit)
-          ->get();
+          ->when($query, function ($qBuilder) use ($query) {
+            $qBuilder->where('property_number', 'like', "%$query%")
+                ->whereHas('item_type', function ($q4) {
+                    $q4->where('is_main_inventory', true)
+                        ->where('is_component', false);
+                });
+        })
+        ->when($exclude_id, function ($qBuilder) use ($exclude_id) {
+            $qBuilder->where('id', '!=', $exclude_id);
+        })
+        ->offset($offset)
+        ->limit($limit)
+        ->get();  
 
       return response()->json([
           'data' => InventoryResource::collection($inventories),

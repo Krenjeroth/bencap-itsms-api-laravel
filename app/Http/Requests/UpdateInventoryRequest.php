@@ -39,7 +39,7 @@ class UpdateInventoryRequest extends FormRequest
             'microsoft_office_name' => ['nullable', 'string', 'max:255'],
             'ms_office_license_number' => ['nullable', 'string', 'max:255'],
             'other_installed_applications' => ['nullable', 'string', 'max:1000'],
-            'property_number' => ['required', 'string', 'max:255', 'unique:inventories,property_number,' . $this->inventory->id],
+            'property_number' => ['required', 'string', 'max:255', 'unique:inventories,property_number,' . $this->route('inventory')->id],
             'date_acquired' => ['nullable', 'date'],
             'warranty_expiration_date' => ['nullable', 'date'],
             'serial_number' => ['nullable', 'string', 'max:255'],
@@ -48,9 +48,6 @@ class UpdateInventoryRequest extends FormRequest
             'internal_components' => 'array',
             'internal_components.*.brand_model.id' => 'required|integer',
             'internal_components.*.quantity' => 'required|integer|min:1',
-            
-            // 'internal_components.*.brand_model.id' => ['nullable', 'exists:brand_models,id'],
-            // 'internal_components.*.quantity' => ['nullable', 'integer'],
             
             // 'parent_component' => ['nullable', 'string', 'max:255'],
             // 'inventory_type' => ['nullable', 'string', 'max:255'],

@@ -56,19 +56,4 @@ class StoreInventoryRequest extends FormRequest
             // 'inventory_type' => ['nullable', 'string', 'max:255'],
         ];
     }
-
-    public function attributes(): array {
-        return [
-            'brand_model_id' => 'Brand Model',
-            'employee_id' => 'Employee',
-            'parent_component_id' => 'Parent Component',
-            'property_number' => 'Property Number',
-            'date_acquired' => 'Date Acquired',
-            'warranty_expiration_date' => 'Warranty Expiration Date',
-            'ip_address' => 'IP Address',
-            'mac_address' => 'MAC Address',
-
-            'status' => 'Status',
-        ];
-    }
 }

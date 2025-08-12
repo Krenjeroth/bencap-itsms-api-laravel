@@ -23,43 +23,37 @@ class UpdateInventoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'brand_model_id' => ['required', 'exists:brand_models,id'],
-            'employee_id' => ['required', 'exists:employees,id'],
-            'parent_component' => ['nullable', 'string', 'max:255'],
-            'code' => ['nullable', 'string', 'max:255', 'unique:inventories,code,' . $this->inventory->id],
-            'barcode' => ['nullable', 'string', 'max:255', 'unique:inventories,barcode,' . $this->inventory->id],
-            'description' => ['nullable', 'string', 'max:255'],
-            'serial_number' => ['nullable', 'string', 'max:255'],
-            'property_number' => ['required', 'string', 'max:255', 'unique:inventories,property_number,' . $this->inventory->id],
-            'date_issued' => ['nullable', 'date'],
-            'date_acquired' => ['nullable', 'date'],
-            'date_accepted' => ['nullable', 'date'],
-            'date_installed' => ['nullable', 'date'],
+            'employee_id' => ['nullable', 'exists:employees,id'],
+            'item_type_id' => ['nullable', 'exists:item_types,id'],
+            'brand_model_id' => ['nullable', 'exists:brand_models,id'],
+            'parent_component_id' => ['nullable', 'exists:inventories,id'],
+            
             'ip_address' => ['nullable', 'string', 'max:255'],
             'mac_address' => ['nullable', 'string', 'max:255'],
-            'inventory_type' => ['nullable', 'string', 'max:255'],
-            'status' => ['nullable', 'string', 'max:255'],
-        ];
-    }
+            'remarks' => ['nullable', 'string', 'max:1000'],
 
-    public function attributes(): array {
-        return [
-            'brand_model_id' => 'Brand Model',
-            'employee_id' => 'Employee',
-            'parent_component' => 'Parent Component',
-            'code' => 'Code',
-            'barcode' => 'Barcode',
-            'description' => 'Description',
-            'serial_number' => 'Serial Number',
-            'property_number' => 'Property Number',
-            'date_issued' => 'Date Issued',
-            'date_acquired' => 'Date Acquired',
-            'date_accepted' => 'Date Accepted',
-            'date_installed' => 'Date Installed',
-            'ip_address' => 'IP Address',
-            'mac_address' => 'MAC Address',
-            'inventory_type' => 'Inventory Type',
-            'status' => 'Status',
+            'operating_system_name' => ['nullable', 'string', 'max:255'],
+            'os_license_number' => ['nullable', 'string', 'max:255'],
+            'anti_virus_name' => ['nullable', 'string', 'max:255'],
+            'anti_virus_license_number' => ['nullable', 'string', 'max:255'],
+            'microsoft_office_name' => ['nullable', 'string', 'max:255'],
+            'ms_office_license_number' => ['nullable', 'string', 'max:255'],
+            'other_installed_applications' => ['nullable', 'string', 'max:1000'],
+            'property_number' => ['required', 'string', 'max:255', 'unique:inventories,property_number,' . $this->inventory->id],
+            'date_acquired' => ['nullable', 'date'],
+            'warranty_expiration_date' => ['nullable', 'date'],
+            'serial_number' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'string', 'max:255'],
+
+            'internal_components' => 'array',
+            'internal_components.*.brand_model.id' => 'required|integer',
+            'internal_components.*.quantity' => 'required|integer|min:1',
+            
+            // 'internal_components.*.brand_model.id' => ['nullable', 'exists:brand_models,id'],
+            // 'internal_components.*.quantity' => ['nullable', 'integer'],
+            
+            // 'parent_component' => ['nullable', 'string', 'max:255'],
+            // 'inventory_type' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

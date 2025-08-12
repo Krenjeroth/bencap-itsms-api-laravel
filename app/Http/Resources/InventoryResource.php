@@ -25,14 +25,41 @@ class InventoryResource extends JsonResource
 
         $employee_full_name_formatted = $employee_full_name ? ' - ' . $employee_full_name : '';
 
+        $inventory = $this?->loadMissing('internal_components');
+
+        $internal_components = [];
+
+        if($inventory) {
+          foreach($inventory->internal_components as $internal_component) {
+            $internal_components[] = [
+              'id' => $internal_component->id,
+              // 'inventory' => InventoryResource::make($internal_component->inventory),
+              'brand_model' => BrandModelResource::make($internal_component->brand_model),
+              'specific_serial_number' => $internal_component->specific_serial_number,
+              'slot' => $internal_component->slot,
+              'quantity' => $internal_component->quantity,
+              'notes' => $internal_component->notes,
+            ];
+          }
+        }
+
+        $item_type = ItemTypeResource::make($this->whenLoaded('item_type'));
+        $brand_model = BrandModelResource::make($this->whenLoaded('brand_model'));
+
+        $computed_brand_model = $brand_model ? $brand_model : $item_type->brand_model; 
+        // if($this->item_type_id === 1) {
+        //   $computed_brand_model = $item_type->brand_model;
+        // }
+
         return [
           'id' => $this->id,
           'employee' => EmployeeResource::make($this->whenLoaded('employee')),
-          'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
-          'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
+          'item_type' => $item_type,
+          'brand_model' => $computed_brand_model,
           'inventory' => InventoryResource::make($this->whenLoaded('parent_component')),
           
-          'internal_components' => InventoryInternalComponentResource::collection($this->whenLoaded('internal_components')),
+          'internal_components' => $internal_components,
+          // 'internal_components' => InventoryInternalComponentResource::collection($this->whenLoaded('internal_components')),
 
           'ip_address' => $this->ip_address,
           'mac_address' => $this->mac_address,

@@ -16,6 +16,15 @@ class InventoryController extends Controller
       // Gate::authorize('item_type_index');
 
       $query = Inventory::query();
+      // $query = Inventory::query()
+      //   ->with([
+      //       'employee',
+      //       'item_type',
+      //       'brand_model',
+      //       'parent_component',
+      //       'internal_components.brand_model', // load brand_model for each internal_component
+      //       'internal_components.inventory',   // load inventory for each internal_component
+      //   ]);
 
       if($request->has('search')) {
         $search = $request->search;
@@ -77,6 +86,46 @@ class InventoryController extends Controller
       $data = $request->validated();
 
       $inventory->update($data);
+
+      // 2. Handle internal components if item_type_id = 1
+      if ((int) $data['item_type_id'] === 1) {
+        $newComponents = $data['internal_components'] ?? [];
+
+        // Get current component IDs in DB
+        $existingIds = $inventory->internal_components()->pluck('id')->toArray();
+
+        // IDs from the request (existing ones)
+        $incomingIds = collect($newComponents)
+            ->pluck('id') // 'id' might be missing for new components
+            ->filter()
+            ->toArray();
+
+        // Delete components that are in DB but not in request
+        $toDelete = array_diff($existingIds, $incomingIds);
+        InventoryInternalComponent::whereIn('id', $toDelete)->delete();
+
+        // Add or update components from request
+        foreach ($newComponents as $component) {
+            if (isset($component['id']) && in_array($component['id'], $existingIds)) {
+                // Update existing
+                $comp = InventoryInternalComponent::find($component['id']);
+                $comp->update([
+                    'brand_model_id' => $component['brand_model']['id'],
+                    'quantity'       => $component['quantity'],
+                ]);
+            } else {
+                // Create new
+                InventoryInternalComponent::create([
+                    'inventory_id'   => $inventory->id,
+                    'brand_model_id' => $component['brand_model']['id'],
+                    'quantity'       => $component['quantity'],
+                ]);
+            }
+        }
+      } else {
+        // If item type changed, remove all internal components
+        $inventory->internal_components()->delete();
+      }
 
       return new InventoryResource($inventory);
     }

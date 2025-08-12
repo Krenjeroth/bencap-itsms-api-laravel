@@ -92,17 +92,23 @@ class BrandModelController extends Controller
 
     public function search(Request $request) {
       $query = $request->get('q');
+      $item_type_id = $request->get('item_type_id');
       $limit = (int) $request->get('limit', 20);
       $page = (int) $request->get('page', 1);
       $offset = ($page - 1) * $limit;
 
-      $brand_models = BrandModel::query()
+      // if($item_type_id) {
+        $brand_models = BrandModel::query()
+          ->when($item_type_id, fn($qBuilder) =>
+              $qBuilder->where('item_type_id', $item_type_id)
+          )
           ->when($query, fn($qBuilder) =>
               $qBuilder->where('specification', 'like', "%$query%")->orWhere('name', 'like', "%$query%")
           )
           ->offset($offset)
           ->limit($limit)
           ->get();
+      // }
 
       return response()->json([
           'data' => BrandModelResource::collection($brand_models),

@@ -21,6 +21,7 @@ class ItemTypeResource extends JsonResource
           'purpose' => $this->purpose,
           'is_main_inventory' => $this->is_main_inventory,
           'is_component' => $this->is_component,
+          'part_number' => $this->part_number,
           'status' => $this->status,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,

@@ -26,6 +26,9 @@ class StoreItemTypeRequest extends FormRequest
             'type' => ['required', 'string', 'max:255', 'unique:item_types,type'],
             'classification' => ['required', 'string', 'max:255'],
             'purpose' => ['required', 'string', 'max:255'],
+            'is_main_inventory' => ['required', 'boolean', 'default' => false],
+            'is_component' => ['required', 'boolean', 'default' => false],
+            // 'part_number' => ['required', 'string', 'max:255'],
         ];
     }
 

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('status_text')->nullable();
             $table->text('engagement')->nullable();
             $table->string('img_path')->nullable();
+            $table->timestamp('last_seen_at')->nullable();
             $table->timestamps();
         });
     }

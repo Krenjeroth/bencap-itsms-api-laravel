@@ -18,6 +18,10 @@ class Profile extends Model
         'img_path',
     ];
 
+    const STATUS_ONLINE = 'online';
+    const STATUS_OFFLINE = 'offline';
+    const STATUS_BUSY = 'busy';
+
     public function user() {
       return $this->belongsTo(User::class);
     }

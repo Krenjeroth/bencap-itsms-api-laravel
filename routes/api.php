@@ -112,6 +112,21 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::get('inventories-main-asset-search', [InventoryController::class, 'searchMainAsset']);
 
+  // Heartbeat Routes
+
+  Route::put('/me/heartbeat', [ProfileController::class, 'updateStatus']);
+//   Route::put('/me/heartbeat', function (Request $request) {
+//     $profile = $request->user()->profile;
+
+//     if ($profile) {
+//         $profile->update([
+//             'status' => \App\Models\Profile::STATUS_ONLINE,
+//             'last_seen_at' => now(),
+//         ]);
+//     }
+
+//     return response()->json(['message' => 'Heartbeat updated']);
+// });
 
   // Enums
 

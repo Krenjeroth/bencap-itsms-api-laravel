@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
+use App\Models\Profile;
 use App\Enums\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,8 +11,8 @@ use App\Http\Resources\TicketResource;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Requests\ResolveTicketRequest;
-use App\Http\Requests\SetTicketServiceMethodRequest;
 use App\Http\Requests\SetTicketReleaseDateRequest;
+use App\Http\Requests\SetTicketServiceMethodRequest;
 
 class TicketController extends Controller
 {
@@ -127,10 +128,17 @@ class TicketController extends Controller
         if (!$alreadyAccepted) {
             $ticket->personnel()->attach($profile->id);
 
+            // Mark ticket as accepted if it's the first personnel assigned
             if ($ticket->personnel()->count() === 1) {
                 $ticket->update([
                     'query_status' => TicketStatus::InProgress,
                     'request_status' => TicketStatus::Accepted,
+                ]);
+            }
+
+            if ($profile->status === Profile::STATUS_ONLINE) {
+                $profile->update([
+                    'status' => Profile::STATUS_BUSY
                 ]);
             }
         }

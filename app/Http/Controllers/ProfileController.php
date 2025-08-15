@@ -2,22 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Profile;
 
 class ProfileController extends Controller
 {
     public function updateStatus(Request $request) {
-          $profile = $request->user()->profile;
+        $user = auth('sanctum')->user();
 
-    if ($profile) {
-        $profile->update([
-            'status' => Profile::STATUS_ONLINE,
-            'last_seen_at' => Carbon::now(),
-        ]);
+        if ($user && $user->profile) {
+            $user->profile->update([
+                'status' => Profile::STATUS_ONLINE,
+                'last_seen_at' => now(),
+            ]);
+        }
+
+        return response()->json(['message' => 'Heartbeat updated']);
     }
 
-    return response()->json(['message' => 'Heartbeat updated']);
+    public function setStatusOffline(Request $request) {
+        $user = auth('sanctum')->user();
+
+        if ($user && $user->profile) {
+            $user->profile->update([
+                'status' => Profile::STATUS_OFFLINE,
+                'last_seen_at' => now(),
+            ]);
+            return response()->json(['message' => 'Status set to offline.']);
+        }
+
+        return response()->noContent(); // 204 if no user
     }
 }

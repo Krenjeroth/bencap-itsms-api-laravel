@@ -16,6 +16,7 @@ class Profile extends Model
         'engagement',
         'gender',
         'img_path',
+        'last_seen_at',
     ];
 
     const STATUS_ONLINE = 'online';

@@ -1,27 +1,28 @@
 <?php
 
+use App\Enums\TicketStatus;
 use Illuminate\Http\Request;
+use App\Http\Middleware\AuthGates;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ItemTypeController;
+use App\Http\Controllers\ItSupplyController;
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\SolutionController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\ItServiceController;
+use App\Http\Controllers\BrandModelController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\PositionController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\BrandModelController;
-use App\Http\Controllers\ItemTypeController;
 use App\Http\Controllers\CommonProblemController;
-use App\Http\Controllers\ItServiceController;
-use App\Http\Controllers\TicketController;
-use App\Http\Controllers\SolutionController;
-use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\MeasurementUnitController;
-use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\ItSupplyController;
-use App\Http\Middleware\AuthGates;
-use App\Enums\TicketStatus;
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('user', function (Request $request) {
@@ -115,18 +116,7 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   // Heartbeat Routes
 
   Route::put('/me/heartbeat', [ProfileController::class, 'updateStatus']);
-//   Route::put('/me/heartbeat', function (Request $request) {
-//     $profile = $request->user()->profile;
-
-//     if ($profile) {
-//         $profile->update([
-//             'status' => \App\Models\Profile::STATUS_ONLINE,
-//             'last_seen_at' => now(),
-//         ]);
-//     }
-
-//     return response()->json(['message' => 'Heartbeat updated']);
-// });
+  Route::put('/me/stop-heartbeat', [ProfileController::class, 'setStatusOffline']);
 
   // Enums
 

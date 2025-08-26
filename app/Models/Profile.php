@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TicketStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
@@ -22,6 +23,16 @@ class Profile extends Model
     const STATUS_ONLINE = 'online';
     const STATUS_OFFLINE = 'offline';
     const STATUS_BUSY = 'busy';
+
+    public function hasActiveTickets() {
+      return $this->ticketPersonnel()
+          ->wherePivotNotIn('status', ['resolved', 'cancelled']) // adjust if you have ticket status on pivot
+          ->whereIn('tickets.request_status', [
+              TicketStatus::Accepted,
+              TicketStatus::InProgress,
+          ])
+          ->exists();
+    }
 
     public function user() {
       return $this->belongsTo(User::class);

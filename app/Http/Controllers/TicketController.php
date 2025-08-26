@@ -138,7 +138,13 @@ class TicketController extends Controller
 
             if ($profile->status === Profile::STATUS_ONLINE) {
                 $profile->update([
-                    'status' => Profile::STATUS_BUSY
+                    'status'     => Profile::STATUS_BUSY,
+                    'engagement' => Profile::STATUS_BUSY,
+                ]);
+            } else {
+                // even if they were offline/other, mark engagement busy so it’s consistent
+                $profile->update([
+                    'engagement' => Profile::STATUS_BUSY,
                 ]);
             }
         }
@@ -170,6 +176,21 @@ class TicketController extends Controller
 
       $ticket->update($data);
 
+      foreach ($ticket->personnel as $profile) {
+          $stillBusy = $profile->tickets()
+              ->whereIn('request_status', [TicketStatus::Accepted, TicketStatus::InProgress])
+              ->exists();
+
+          if (!$stillBusy) {
+              $profile->update([
+                  'engagement' => Profile::STATUS_ONLINE,
+                  'status' => $profile->status === Profile::STATUS_BUSY
+                      ? Profile::STATUS_ONLINE
+                      : $profile->status,
+              ]);
+          }
+      }
+
       return new TicketResource($ticket);
     }
 
@@ -178,6 +199,21 @@ class TicketController extends Controller
           'query_status' => TicketStatus::Cancelled,
           'request_status' => TicketStatus::Closed,
       ]);
+
+      foreach ($ticket->personnel as $profile) {
+          $stillBusy = $profile->tickets()
+              ->whereIn('request_status', [TicketStatus::Accepted, TicketStatus::InProgress])
+              ->exists();
+
+          if (!$stillBusy) {
+              $profile->update([
+                  'engagement' => Profile::STATUS_ONLINE,
+                  'status' => $profile->status === Profile::STATUS_BUSY
+                      ? Profile::STATUS_ONLINE
+                      : $profile->status,
+              ]);
+          }
+      }
 
       return new TicketResource($ticket);
     }

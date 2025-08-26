@@ -26,6 +26,7 @@ class ProfileController extends Controller
         if ($user && $user->profile) {
             $user->profile->update([
                 'status' => Profile::STATUS_OFFLINE,
+                'engagement' => null, // 🔑 clear BUSY engagement
                 'last_seen_at' => now(),
             ]);
             return response()->json(['message' => 'Status set to offline.']);

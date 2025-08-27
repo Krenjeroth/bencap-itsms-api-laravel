@@ -10,6 +10,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('users:mark-offline')->everyMinute();
-// Schedule::command('users:mark-offline')->everySecond();
-// Schedule::command('users:mark-offline')->everyThirtySeconds();
+Schedule::command('users:mark-offline')->everyFiveMinutes()->withoutOverlapping();

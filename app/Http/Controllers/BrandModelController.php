@@ -103,7 +103,9 @@ class BrandModelController extends Controller
               $qBuilder->where('item_type_id', $item_type_id)
           )
           ->when($query, fn($qBuilder) =>
-              $qBuilder->where('specification', 'like', "%$query%")->orWhere('name', 'like', "%$query%")
+              $qBuilder->where('specification', 'like', "%$query%")->orWhere('name', 'like', "%$query%")->orWhereHas('brand', function($q) use ($query) {
+                  $q->where('name', 'like', "%$query%");
+              })
           )
           ->offset($offset)
           ->limit($limit)

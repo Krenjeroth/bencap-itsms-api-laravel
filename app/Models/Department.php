@@ -13,4 +13,8 @@ class Department extends Model
         'division',
         'abbreviation',
     ];
+
+    public function profiles() {
+        return $this->belongsToMany(Profile::class);
+    }
 }

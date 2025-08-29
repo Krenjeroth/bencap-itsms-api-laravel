@@ -10,4 +10,8 @@ class Agency extends Model
         'name',
         'abbreviation',
     ];
+
+    public function profiles() {
+        return $this->belongsToMany(Profile::class, 'profile_agency');
+    }
 }

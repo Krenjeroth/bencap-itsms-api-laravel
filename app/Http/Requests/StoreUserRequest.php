@@ -39,12 +39,15 @@ class StoreUserRequest extends FormRequest
             'designation' => ['required', 'string', 'max:255'],
             'photo_id' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'password' => ['required', 'string'],
+            'offices_assigned_ids' => ['nullable', 'array'],
+            'offices_assigned_ids.*' => ['integer', 'exists:departments,id'],
         ];
     }
 
     public function attributes() {
       return [
         'photo_id' => 'Photo ID',
+        'offices_assigned_ids' => 'Offices Assigned',
       ];
     }
 }

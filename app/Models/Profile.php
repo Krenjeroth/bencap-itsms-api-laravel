@@ -50,4 +50,12 @@ class Profile extends Model
       return $this->hasMany(Solution::class, 'author_id');
     }
 
+    public function departments() {
+        return $this->belongsToMany(Department::class, 'profile_department');
+    }
+
+    public function agencies() {
+        return $this->belongsToMany(Agency::class, 'profile_agency');
+    }
+
 }

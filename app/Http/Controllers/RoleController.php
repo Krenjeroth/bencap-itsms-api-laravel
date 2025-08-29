@@ -48,6 +48,7 @@ class RoleController extends Controller
       $data = $request->validated();
 
       $role = Role::create($data);
+      $role->permissions()->sync($data['permission_ids']);
 
       return new RoleResource($role);
     }

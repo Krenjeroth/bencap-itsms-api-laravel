@@ -23,22 +23,16 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // user
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'role' => ['required', 'exists:roles,id'],
-            // profile
             'username' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'photo_id' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'role' => ['required', 'integer', 'exists:roles,id'],
             'display_name' => ['required', 'string', 'max:255'],
-            'prefix' => ['string'],
-            'firstname' => ['required', 'string', 'min:3', 'max:50'],
-            'middlename' => ['required', 'string', 'min:3', 'max:50'],
-            'lastname' => ['required', 'string', 'min:3', 'max:50'],
-            'suffix' => ['string'],
-            'name' => ['required', 'json', 'max:1000'],
-            'gender' => ['required', 'string', 'in:male,female,other'],
+            'name' => ['required', 'string', 'max:255'],
+            'gender' => ['required', 'string', 'max:255'],
             'designation' => ['required', 'string', 'max:255'],
-            'photo_id' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-            'password' => ['required', 'string'],
+
             'offices_assigned_ids' => ['nullable', 'array'],
             'offices_assigned_ids.*' => ['integer', 'exists:departments,id'],
         ];

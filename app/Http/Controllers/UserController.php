@@ -59,14 +59,6 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request) {
       Gate::authorize('user_store');
-
-      dd('asdfasdf');
-
-      if ($request->has('offices_assigned_ids') && is_string($request->offices_assigned_ids)) {
-        $request->merge([
-            'offices_assigned_ids' => json_decode($request->offices_assigned_ids, true),
-        ]);
-      }
       
       $data = $request->validated();
       $data['img_path'] = null;
@@ -93,9 +85,9 @@ class UserController extends Controller
           'engagement' => 'ready',
           'img_path' => $data['img_path'],
         ]);
-        if (!empty($data['offices_assigned_ids'])) {
-          $user->profile->departments()->sync($data['offices_assigned_ids']);
-        }
+          if (!empty($data['offices_assigned_ids'])) {
+              $user->profile->departments()->sync($data['offices_assigned_ids']);
+          }
       }
       
       return new UserResource($user);

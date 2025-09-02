@@ -88,6 +88,10 @@ class UserController extends Controller
           if (!empty($data['offices_assigned_ids'])) {
               $user->profile->departments()->sync($data['offices_assigned_ids']);
           }
+          
+          if (!empty($data['agencies_assigned_ids'])) {
+              $user->profile->agencies()->sync($data['agencies_assigned_ids']);
+          }
       }
       
       return new UserResource($user);

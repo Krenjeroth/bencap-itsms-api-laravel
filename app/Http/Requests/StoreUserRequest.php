@@ -35,6 +35,9 @@ class StoreUserRequest extends FormRequest
 
             'offices_assigned_ids' => ['nullable', 'array'],
             'offices_assigned_ids.*' => ['integer', 'exists:departments,id'],
+            
+            'agencies_assigned_ids' => ['nullable', 'array'],
+            'agencies_assigned_ids.*' => ['integer', 'exists:agencies,id'],
         ];
     }
 
@@ -42,6 +45,7 @@ class StoreUserRequest extends FormRequest
       return [
         'photo_id' => 'Photo ID',
         'offices_assigned_ids' => 'Offices Assigned',
+        'agencies_assigned_ids' => 'Agencies Assigned',
       ];
     }
 }

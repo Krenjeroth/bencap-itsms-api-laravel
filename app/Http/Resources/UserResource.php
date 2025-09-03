@@ -15,12 +15,19 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $user = $this?->loadMissing('roles.permissions');
+        $user_roles_permissions = $this?->loadMissing('roles.permissions');
+        $profile_departments = $this?->loadMissing('profile.departments');
+        $profile_agencies = $this?->loadMissing('profile.agencies');
         $permissions = [];
         $roles = [];
+        $offices_assigned = [];
+        $offices_assigned_ids = [];
+        $agencies_assigned = [];
+        $agencies_assigned_ids = [];
+        $offices_agencies_assigned = [];
 
-        if($user) {
-          foreach($user->roles as $role) {
+        if($user_roles_permissions) {
+          foreach($user_roles_permissions->roles as $role) {
             $roles[] = [
               'id' => $role->id,
               'title' => $role->title,
@@ -29,6 +36,38 @@ class UserResource extends JsonResource
             foreach($role->permissions as $singlePermission) {
               $permissions[] = $singlePermission->title;
             }
+          }
+        }
+
+        if($profile_departments) {
+          foreach($profile_departments->profile->departments as $department) {
+            $offices_assigned[] = [
+              'id' => $department->id,
+              'abbreviation' => $department->abbreviation,
+            ];
+
+            $offices_agencies_assigned[] = [
+              'id' => $department->id,
+              'abbreviation' => $department->abbreviation,
+            ];
+
+            $offices_assigned_ids[] = $department->id;
+          }
+        }
+
+        if($profile_agencies) {
+          foreach($profile_agencies->profile->agencies as $agency) {
+            $agencies_assigned[] = [
+              'id' => $agency->id,
+              'abbreviation' => $agency->abbreviation,
+            ];
+
+            $offices_agencies_assigned[] = [
+              'id' => $agency->id,
+              'abbreviation' => $agency->abbreviation,
+            ];
+
+            $agencies_assigned_ids[] = $agency->id;
           }
         }
 
@@ -44,7 +83,12 @@ class UserResource extends JsonResource
             return [
               $permission => true
             ];
-          })->collapse()->toArray()
+          })->collapse()->toArray(),
+          'offices_assigned' => $offices_assigned,
+          'agencies_assigned' => $agencies_assigned,
+          'offices_assigned_ids' => $offices_assigned_ids,
+          'agencies_assigned_ids' => $agencies_assigned_ids,
+          'offices_agencies_assigned' => $offices_agencies_assigned,
         ];
     }
 }

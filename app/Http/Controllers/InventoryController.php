@@ -147,6 +147,18 @@ class InventoryController extends Controller
       $inventories = Inventory::query()
           ->when($query, fn($qBuilder) =>
               $qBuilder->where('property_number', 'like', "%$query%")
+            ->orWhere(function ($queryBuilder) use ($query) {
+                $queryBuilder
+                    ->whereHas('employee', function ($q) use ($query) {
+                        $q->where('full_name', 'like', "%$query%");
+                    })
+                    ->orWhere(function ($q2) use ($query) {
+                        $q2->whereDoesntHave('employee')
+                            ->whereHas('parent_component.employee', function ($q3) use ($query) {
+                                $q3->where('full_name', 'like', "%$query%");
+                            });
+                    });
+            })
           )
           ->offset($offset)
           ->limit($limit)

@@ -43,20 +43,25 @@ class InventoryResource extends JsonResource
           }
         }
 
+        $employee = EmployeeResource::make($this->whenLoaded('employee'));
+        $inventory = InventoryResource::make($this->whenLoaded('parent_component'));
         $item_type = ItemTypeResource::make($this->whenLoaded('item_type'));
         $brand_model = BrandModelResource::make($this->whenLoaded('brand_model'));
 
-        $computed_brand_model = $brand_model ? $brand_model : $item_type->brand_model; 
+        $computed_brand_model = $brand_model ? $brand_model : $item_type->brand_model;
+        
+        $computed_brand_model_search = is_null($brand_model->resource) ? $item_type->type : "{$brand_model->brand->name} $item_type->type";
+        $employee_full_name = is_null($employee->resource) ? "{$inventory->employee->full_name}" : "{$employee->full_name}";
         // if($this->item_type_id === 1) {
         //   $computed_brand_model = $item_type->brand_model;
         // }
 
         return [
           'id' => $this->id,
-          'employee' => EmployeeResource::make($this->whenLoaded('employee')),
+          'employee' => $employee,
           'item_type' => $item_type,
           'brand_model' => $computed_brand_model,
-          'inventory' => InventoryResource::make($this->whenLoaded('parent_component')),
+          'inventory' => $inventory,
           
           'internal_components' => $internal_components,
           // 'internal_components' => InventoryInternalComponentResource::collection($this->whenLoaded('internal_components')),
@@ -80,6 +85,9 @@ class InventoryResource extends JsonResource
           // 'parent_component' => $this->parent_component,
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
+
+          // Options
+          'inventory_option_attribute' => "$this->property_number - $computed_brand_model_search ({$employee_full_name})",
         ];
     }
 }

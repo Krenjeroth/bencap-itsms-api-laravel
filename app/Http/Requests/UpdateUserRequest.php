@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
         return [
           'username' => ['required', 'string', 'max:255'],
           'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $this->user->id],
-          'password' => ['required', 'string', 'min:8', 'max:255'],
+          // 'password' => ['required', 'string', 'min:8', 'max:255'],
           'photo_id' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
           'role' => ['required', 'integer', 'exists:roles,id'],
           'display_name' => ['required', 'string', 'max:255'],

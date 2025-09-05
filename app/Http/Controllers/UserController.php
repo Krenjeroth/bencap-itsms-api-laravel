@@ -133,6 +133,13 @@ class UserController extends Controller
           $user->roles()->sync([$data['role']]);
 
           Profile::where('user_id', $user->id)->update($profile_data);
+          if (!empty($data['offices_assigned_ids'])) {
+              $user->profile->departments()->sync($data['offices_assigned_ids']);
+          }
+          
+          if (!empty($data['agencies_assigned_ids'])) {
+              $user->profile->agencies()->sync($data['agencies_assigned_ids']);
+          }
         }
       }
 

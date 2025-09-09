@@ -14,7 +14,7 @@ class Department extends Model
         'abbreviation',
     ];
 
-    public function profiles() {
-        return $this->belongsToMany(Profile::class);
+    public function assigned_profiles() {
+        return $this->belongsToMany(Profile::class, 'profile_department');
     }
 }

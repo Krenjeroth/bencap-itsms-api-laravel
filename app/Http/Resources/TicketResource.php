@@ -26,21 +26,21 @@ class TicketResource extends JsonResource
     {
         $hasAccepted = $this->personnel->contains(Auth::user()->profile->id);
         $acceptedByOthers = $this->personnel->isNotEmpty() && $this->personnel->doesntContain(Auth::user()->profile->id);
-        // $profile_id = Auth::user()->profile->id;
-        // $hasAccepted = $this->personnel
-        // ->contains(function ($person) use ($profile_id) {
-        //     return $person->pivot->profile_id === $profile_id && $person->pivot->accepted === true;
-        // });
+
+        $inventory = $this->whenLoaded('inventory');
+        $agency = $this->whenLoaded('agency');
 
         return [
           'id' => $this->id,
           'profile' => ProfileResource::make($this->whenLoaded('profile')),
-          'inventory' => InventoryResource::make($this->whenLoaded('inventory')),
+          'inventory' => InventoryResource::make($inventory),
           'item_type' => ItemTypeResource::make($this->whenLoaded('item_type')),
           'it_service' => ItServiceResource::make($this->whenLoaded('itService')),
           'personnel' => ProfileResource::collection($this->whenLoaded('personnel')),
           'solution' => SolutionResource::make($this->whenLoaded('solution')),
-          'agency' => AgencyResource::make($this->whenLoaded('agency')),
+          'agency' => AgencyResource::make($agency),
+          'personnel_agency_assigned' => ProfileResource::collection($agency?->assigned_profiles ?? collect()),
+          'personnel_office_assigned' => ProfileResource::collection($inventory?->employee?->department?->assigned_profiles ?? collect()),
           'ticket_number' => $this->ticket_number,
           'concern' => $this->concern,
           'query_status' => $this->query_status,

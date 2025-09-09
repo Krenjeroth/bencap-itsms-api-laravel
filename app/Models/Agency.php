@@ -11,7 +11,7 @@ class Agency extends Model
         'abbreviation',
     ];
 
-    public function profiles() {
+    public function assigned_profiles() {
         return $this->belongsToMany(Profile::class, 'profile_agency');
     }
 }

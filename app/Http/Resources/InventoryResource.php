@@ -64,8 +64,6 @@ class InventoryResource extends JsonResource
           'inventory' => $inventory,
           
           'internal_components' => $internal_components,
-          // 'internal_components' => InventoryInternalComponentResource::collection($this->whenLoaded('internal_components')),
-
           'ip_address' => $this->ip_address,
           'mac_address' => $this->mac_address,
           'remarks' => $this->remarks,

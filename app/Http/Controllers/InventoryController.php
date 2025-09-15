@@ -15,16 +15,9 @@ class InventoryController extends Controller
     public function index(Request $request) {
       // Gate::authorize('item_type_index');
 
+      // might only show System Unit Components / Parent components
+      // Child components will be shown in the parent component expandable details.
       $query = Inventory::query();
-      // $query = Inventory::query()
-      //   ->with([
-      //       'employee',
-      //       'item_type',
-      //       'brand_model',
-      //       'parent_component',
-      //       'internal_components.brand_model', // load brand_model for each internal_component
-      //       'internal_components.inventory',   // load inventory for each internal_component
-      //   ]);
 
       if($request->has('search')) {
         $search = $request->search;

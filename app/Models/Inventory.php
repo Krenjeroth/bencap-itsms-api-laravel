@@ -49,4 +49,38 @@ class Inventory extends Model
     public function internal_components() {
       return $this->hasMany(InventoryInternalComponent::class);
     }
+
+    public function getComputedBrandModelSearchAttribute(): ?string {
+      if (! $this->relationLoaded('item_type')) {
+          return null;
+      }
+
+      $type = $this->item_type?->type;
+
+      $brandName = $this->relationLoaded('brand_model')
+          ? $this->brand_model?->brand?->name
+          : null;
+
+      return $brandName
+          ? "{$brandName} {$type}"
+          : $type;
+    }
+
+    public function getEmployeeFullNameAttribute(): ?string {
+      if ($this->relationLoaded('employee')) {
+          return $this->employee?->full_name;
+      }
+
+      return $this->inventory?->employee?->full_name;
+    }
+
+    public function getComputedBrandModelAttribute() {
+      // Prefer the loaded relation if available
+      if ($this->relationLoaded('brand_model') && $this->brand_model) {
+          return $this->brand_model;
+      }
+
+      // Otherwise fallback to item_type->brand_model
+      return $this->item_type?->brand_model;
+    }
 }

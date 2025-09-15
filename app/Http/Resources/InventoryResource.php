@@ -18,13 +18,6 @@ class InventoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
-        // $description = $this->brand_model->specification ? $this->brand_model->item_type->type . ', ' . $this->brand_model->specification . ', ' . $this->brand_model->brand->name . ' ' . $this->brand_model->name : $this->brand_model->item_type->type . ', ' .$this->brand_model->brand->name . ' ' . $this->brand_model->name;
-
-        $employee_full_name = $this->employee ? $this->employee->full_name : null;
-
-        $employee_full_name_formatted = $employee_full_name ? ' - ' . $employee_full_name : '';
-
         $inventory = $this?->loadMissing('internal_components');
 
         $internal_components = [];
@@ -46,15 +39,12 @@ class InventoryResource extends JsonResource
         $employee = EmployeeResource::make($this->whenLoaded('employee'));
         $inventory = InventoryResource::make($this->whenLoaded('parent_component'));
         $item_type = ItemTypeResource::make($this->whenLoaded('item_type'));
-        $brand_model = BrandModelResource::make($this->whenLoaded('brand_model'));
 
-        $computed_brand_model = $brand_model ? $brand_model : $item_type->brand_model;
+        $computed_brand_model = new BrandModelResource($this->computed_brand_model);
         
-        $computed_brand_model_search = is_null($brand_model->resource) ? $item_type->type : "{$brand_model->brand->name} $item_type->type";
-        $employee_full_name = is_null($employee->resource) ? "{$inventory->employee->full_name}" : "{$employee->full_name}";
-        // if($this->item_type_id === 1) {
-        //   $computed_brand_model = $item_type->brand_model;
-        // }
+        $computed_brand_model_search = $this->computed_brand_model_search;
+
+        $employee_full_name = ' - ' . $this->employee_full_name;
 
         return [
           'id' => $this->id,

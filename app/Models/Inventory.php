@@ -67,11 +67,7 @@ class Inventory extends Model
     }
 
     public function getEmployeeFullNameAttribute(): ?string {
-      if ($this->relationLoaded('employee')) {
-          return $this->employee?->full_name;
-      }
-
-      return $this->inventory?->employee?->full_name;
+      return $this->employee?->full_name ?: $this->parent_component?->employee?->full_name;
     }
 
     public function getComputedBrandModelAttribute() {

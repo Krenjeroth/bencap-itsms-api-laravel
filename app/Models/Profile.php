@@ -22,7 +22,9 @@ class Profile extends Model
 
     const STATUS_ONLINE = 'online';
     const STATUS_OFFLINE = 'offline';
-    const STATUS_BUSY = 'busy';
+
+    const ENGAGEMENT_READY = 'ready';
+    const ENGAGEMENT_BUSY = 'busy';
 
     public function hasActiveTickets() {
       return $this->ticketPersonnel()
@@ -43,7 +45,8 @@ class Profile extends Model
     // }
 
     public function ticketPersonnel() {
-      return $this->belongsToMany(Ticket::class, 'ticket_personnel');
+      // return $this->belongsToMany(Ticket::class, 'ticket_personnel');
+      return $this->belongsToMany(Ticket::class, 'ticket_personnel', 'profile_id', 'ticket_id');
     }
 
     public function solutions() {

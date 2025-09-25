@@ -31,12 +31,10 @@ class UsersMarkOffline extends Command
 
         $affected = Profile::where('status', [
                 Profile::STATUS_ONLINE,
-                Profile::STATUS_BUSY, // 🔑 catch busy too
             ])
             ->where('last_seen_at', '<', $threshold)
             ->update([
                 'status' => Profile::STATUS_OFFLINE,
-                'engagement' => null, // clear busy state if dropped
                 'updated_at' => now(),
             ]);
 

@@ -40,6 +40,14 @@ return new class extends Migration
             $table->timestamp('released_at')->nullable();
             $table->string('contact_number')->nullable();
             $table->boolean('is_other_agency')->default(false);
+
+            // Ratings
+            $table->tinyInteger('quality')->nullable()->comment('1-5 rating for quality');
+            $table->tinyInteger('efficiency')->nullable()->comment('1-5 rating for efficiency');
+            $table->tinyInteger('timeliness')->nullable()->comment('1-5 rating for timeliness');
+            // $table->tinyInteger('rating')->nullable()->comment('Average rating (1-5, rounded)');
+
+
             $table->timestamps();
         });
     }

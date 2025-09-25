@@ -30,6 +30,9 @@ class Ticket extends Model
         'contact_number',
         'full_name',
         'is_other_agency',
+        'quality',
+        'efficiency',
+        'timeliness',
     ];
 
     protected $casts = [
@@ -43,6 +46,30 @@ class Ticket extends Model
       $count = self::whereDate('created_at', Carbon::today())->count();
       $serial = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
       return "{$today}-{$serial}"; // 2025-0616-0001 / 20250616-0001
+    }
+
+    // Accessor: dynamically compute average rating
+    public function getComputedRatingAttribute(): ?int {
+        $scores = [
+            $this->quality,
+            $this->efficiency,
+            $this->timeliness,
+        ];
+
+        // Filter out nulls in case some scores aren’t filled
+        $validScores = array_filter($scores, fn($val) => !is_null($val));
+
+        if (count($validScores) === 3) {
+            return (int) round(array_sum($validScores) / 3);
+        }
+
+        return null; // no complete rating yet
+
+        /*
+        Usage
+        $ticket = Ticket::find(1);
+        $ticket->computed_rating;
+        */
     }
 
     public function profile() {

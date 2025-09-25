@@ -13,10 +13,10 @@ enum TicketStatus: string
     case AwaitingVendor = 'awaiting_vendor'; // Only when accepted
     case Resolved = 'resolved';
     case Cancelled = 'cancelled';
-    case Reopened = 'reopened';
     
     // Request Status
     case Open = 'open';
     case Accepted = 'accepted';
     case Closed = 'closed';
+    case Reopened = 'reopened';
 }

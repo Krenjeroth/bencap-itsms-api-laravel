@@ -62,7 +62,9 @@ class Ticket extends Model
     }
 
     public function personnel() {
-      return $this->belongsToMany(Profile::class, 'ticket_personnel');
+      return $this->belongsToMany(Profile::class, 'ticket_personnel')
+        ->using(TicketPersonnel::class)
+        ->withTimestamps();
     }
 
     public function item_type() {

@@ -13,67 +13,77 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Requests\ResolveTicketRequest;
 use App\Http\Requests\SetTicketReleaseDateRequest;
 use App\Http\Requests\SetTicketServiceMethodRequest;
+use App\Services\ProfileEngagementService;
+use Illuminate\Support\Facades\Log;
 
 class TicketController extends Controller
 {
     public function index(Request $request) {
       // Gate::authorize('it_service_index');
 
-      $query = Ticket::query();
+      $profileId = Auth::user()->profile->id;
+      $baseQuery = Ticket::query();
 
-      $profile_id = Auth::user()->profile->id;
-
-      // $query = Ticket::query()
-      //   ->with(['personnel']) // eager load to avoid N+1
-      //   ->withCount([
-      //       // This counts if current user accepted the ticket
-      //       'personnel as is_accepted_by_me' => fn($q) =>
-      //       $q->where('profile_id', $profile_id)
-      //   ])->orderByDesc('is_accepted_by_me');
-
-      if($request->has('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use($search) {
-          $q->where('concern', 'LIKE', "%{$search}%")
-          ->orWhere('ticket_number', 'LIKE', "%{$search}%");
-        });
-      }
-
-      if ($request->has('tab')) {
-        if ($request->tab === 'accepted') {
-          $query->whereHas('personnel', function ($q) use ($profile_id) {
-            $q->whereNot('profile_id', $profile_id);
+      if ($request->filled('search')) {
+          $search = $request->search;
+          $baseQuery->where(function ($q) use ($search) {
+              $q->where('concern', 'LIKE', "%{$search}%")
+                ->orWhere('ticket_number', 'LIKE', "%{$search}%");
           });
-        } elseif ($request->tab === 'open') {
-          $query->where('request_status', TicketStatus::Open);
-        } elseif ($request->tab === 'closed') {
-          $query->where('request_status', TicketStatus::Closed);
-        } elseif ($request->tab === 'accepted_by_me') {
-          $query->whereHas('personnel', function ($q) use ($profile_id) {
-            $q->where('profile_id', $profile_id);
-          });
-        }
-        // elseif ($request->tab === 'unaccepted') {
-        //     $query->whereDoesntHave('personnel', function ($q) use ($profile_id) {
-        //         $q->where('profile_id', $profile_id);
-        //     });
-        // }
       }
 
-      if ($request->has('query_status')) {
-        $query->where('query_status', $request->query_status);
+      $query = (clone $baseQuery)
+          ->with(['personnel'])
+          ->withCount([
+              'personnel as accepted_by_me' => fn($q) => $q->where('profile_id', $profileId),
+              'personnel as personnel_count',
+          ]);
+
+      if ($request->filled('tab')) {
+          switch ($request->tab) {
+              case 'accepted_by_me':
+                  $query->whereHas('personnel', fn($q) => $q->where('profile_id', $profileId));
+                  break;
+
+              case 'accepted_by_others':
+                  $query->whereHas('personnel', fn($q) => $q->where('profile_id', '!=', $profileId));
+                  break;
+
+              case 'open':
+                  $query->whereIn('request_status', [TicketStatus::Open, TicketStatus::Reopened]);
+                  break;
+
+              case 'closed':
+                  $query->whereIn('query_status', [TicketStatus::Resolved, TicketStatus::Cancelled]);
+                  break;
+
+          }
       }
 
-      // $query->orderByDesc('is_accepted_by_me');
+      // Query_status filter from dropdown (optional)
+      if ($request->filled('query_status')) {
+          $query->where('query_status', $request->query_status);
+      }
 
-      // Sorting (default to ID)
+      // Sorting
       if ($request->filled('sort')) {
-        $order = $request->input('order', 'asc');
-        $query->orderBy($request->sort, $order);
+          $order = $request->input('order', 'asc');
+          $query->orderBy($request->sort, $order);
+      } else {
+          $query->latest();
       }
 
-      // Paginate with customizable per-page count
-      $tickets = $query->paginate($request->input('per_page', 5))->appends($request->query());
+      $perPage = $request->input('per_page', 10);
+      $currentPage = $request->input('page', 1);
+      $tickets = $query->paginate($perPage, ['*'], 'page', $currentPage)->appends($request->query());
+
+      $counts = [
+          'all' => (clone $baseQuery)->count(),
+          'open' => (clone $baseQuery)->whereIn('request_status', [TicketStatus::Open, TicketStatus::Reopened])->count(),
+          'accepted_by_me' => (clone $baseQuery)->whereHas('personnel', fn($q) => $q->where('profile_id', $profileId))->count(),
+          'accepted_by_others' => (clone $baseQuery)->whereHas('personnel', fn($q) => $q->where('profile_id', '!=', $profileId))->count(),
+          'closed' => (clone $baseQuery)->whereIn('query_status', [TicketStatus::Resolved, TicketStatus::Cancelled])->count(),
+      ];
 
       return response()->json([
           'data' => TicketResource::collection($tickets),
@@ -82,7 +92,8 @@ class TicketController extends Controller
               'per_page' => $tickets->perPage(),
               'current_page' => $tickets->currentPage(),
               'last_page' => $tickets->lastPage(),
-          ]
+              'counts' => $counts,
+          ],
       ]);
     }
 
@@ -117,7 +128,7 @@ class TicketController extends Controller
     }
 
     public function accept(Request $request, Ticket $ticket) {
-        $profile = Auth::user()->profile;
+      $profile = Auth::user()->profile;
 
         if (!$profile) {
             return response()->json(['error' => 'Profile not found.'], 404);
@@ -128,26 +139,15 @@ class TicketController extends Controller
         if (!$alreadyAccepted) {
             $ticket->personnel()->attach($profile->id);
 
-            // Mark ticket as accepted if it's the first personnel assigned
             if ($ticket->personnel()->count() === 1) {
                 $ticket->update([
                     'query_status' => TicketStatus::InProgress,
                     'request_status' => TicketStatus::Accepted,
                 ]);
             }
-
-            if ($profile->status === Profile::STATUS_ONLINE) {
-                $profile->update([
-                    'status'     => Profile::STATUS_BUSY,
-                    'engagement' => Profile::STATUS_BUSY,
-                ]);
-            } else {
-                // even if they were offline/other, mark engagement busy so it’s consistent
-                $profile->update([
-                    'engagement' => Profile::STATUS_BUSY,
-                ]);
-            }
         }
+
+        ProfileEngagementService::syncTicket($ticket);
 
         return new TicketResource($ticket);
     }
@@ -157,6 +157,8 @@ class TicketController extends Controller
           'query_status' => TicketStatus::CheckingStock,
       ]);
 
+      // ?? Consider this action if while personnel is checking stock should be able to accept other tickets
+
       return new TicketResource($ticket);
     }
 
@@ -164,6 +166,8 @@ class TicketController extends Controller
       $ticket->update([
           'query_status' => TicketStatus::AwaitingPart,
       ]);
+
+      ProfileEngagementService::syncTicket($ticket);
 
       return new TicketResource($ticket);      
     }
@@ -176,20 +180,7 @@ class TicketController extends Controller
 
       $ticket->update($data);
 
-      foreach ($ticket->personnel as $profile) {
-          $stillBusy = $profile->tickets()
-              ->whereIn('request_status', [TicketStatus::Accepted, TicketStatus::InProgress])
-              ->exists();
-
-          if (!$stillBusy) {
-              $profile->update([
-                  'engagement' => Profile::STATUS_ONLINE,
-                  'status' => $profile->status === Profile::STATUS_BUSY
-                      ? Profile::STATUS_ONLINE
-                      : $profile->status,
-              ]);
-          }
-      }
+      ProfileEngagementService::syncTicket($ticket);
 
       return new TicketResource($ticket);
     }
@@ -200,31 +191,20 @@ class TicketController extends Controller
           'request_status' => TicketStatus::Closed,
       ]);
 
-      foreach ($ticket->personnel as $profile) {
-          $stillBusy = $profile->tickets()
-              ->whereIn('request_status', [TicketStatus::Accepted, TicketStatus::InProgress])
-              ->exists();
-
-          if (!$stillBusy) {
-              $profile->update([
-                  'engagement' => Profile::STATUS_ONLINE,
-                  'status' => $profile->status === Profile::STATUS_BUSY
-                      ? Profile::STATUS_ONLINE
-                      : $profile->status,
-              ]);
-          }
-      }
+      ProfileEngagementService::syncTicket($ticket);
 
       return new TicketResource($ticket);
     }
 
     public function reopen(Request $request, Ticket $ticket) {
       $ticket->update([
-          'query_status' => TicketStatus::InProgress,
-          'request_status' => TicketStatus::Reopened,
-      ]);
+            'query_status' => TicketStatus::InProgress,
+            'request_status' => TicketStatus::Reopened,
+        ]);
 
-      return new TicketResource($ticket);
+        ProfileEngagementService::syncTicket($ticket);
+
+        return new TicketResource($ticket);
     }
 
     public function setServiceMethod(SetTicketServiceMethodRequest $request, Ticket $ticket) {

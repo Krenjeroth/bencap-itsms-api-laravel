@@ -44,7 +44,7 @@ class InventoryResource extends JsonResource
         
         $computed_brand_model_search = $this->computed_brand_model_search;
 
-        $employee_full_name = ' - ' . $this->employee_full_name;
+        $employee_full_name = $this->employee_full_name;
 
         return [
           'id' => $this->id,

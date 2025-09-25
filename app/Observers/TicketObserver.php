@@ -4,15 +4,33 @@ namespace App\Observers;
 
 use App\Models\Ticket;
 use App\Models\Profile;
+use App\Enums\TicketStatus;
 
 class TicketObserver
 {
+    /**
+     * Ensure profile engagement stays in sync with tickets
+     */
+    protected function syncProfileEngagement(Profile $profile): void {
+      $hasActiveTickets = $profile->ticketPersonnel()
+          ->whereIn('request_status', [TicketStatus::Accepted, TicketStatus::InProgress])
+          ->exists();
+
+      $profile->update([
+          'engagement' => $hasActiveTickets
+              ? Profile::ENGAGEMENT_BUSY
+              : Profile::ENGAGEMENT_READY,
+      ]);
+    }
+
     /**
      * Handle the Ticket "created" event.
      */
     public function created(Ticket $ticket): void
     {
-        //
+      foreach ($ticket->personnel as $profile) {
+          $this->syncProfileEngagement($profile);
+      }
     }
 
     /**
@@ -20,22 +38,9 @@ class TicketObserver
      */
     public function updated(Ticket $ticket): void
     {
-        $profileIds = $ticket->ticketPersonnel()->pluck('profiles.id');
-
-        foreach ($profileIds as $profileId) {
-            $profile = Profile::find($profileId);
-            if (!$profile) continue;
-
-            $hasActiveTickets = $profile->ticketPersonnel()
-                ->whereIn('request_status', ['accepted', 'in_progress'])
-                ->exists();
-
-            if ($profile->status === Profile::STATUS_ONLINE && $hasActiveTickets) {
-                $profile->update(['status' => Profile::STATUS_BUSY]);
-            } elseif (!$hasActiveTickets && $profile->status !== Profile::STATUS_OFFLINE) {
-                $profile->update(['status' => Profile::STATUS_ONLINE]);
-            }
-        }
+      foreach ($ticket->personnel as $profile) {
+          $this->syncProfileEngagement($profile);
+      }
     }
 
     /**
@@ -43,7 +48,9 @@ class TicketObserver
      */
     public function deleted(Ticket $ticket): void
     {
-        //
+      foreach ($ticket->personnel as $profile) {
+          $this->syncProfileEngagement($profile);
+      }
     }
 
     /**

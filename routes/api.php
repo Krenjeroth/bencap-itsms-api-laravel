@@ -23,6 +23,17 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\CommonProblemController;
 use App\Http\Controllers\MeasurementUnitController;
+use App\Services\HrisClientService;
+
+Route::middleware('auth:sanctum')->get('/hris/debug/employees', function (HrisClientService $hris) {
+    $data = $hris->getEmployees();
+
+    return response()->json([
+        'count' => count($data),
+        'keys' => array_keys($data[0] ?? []),
+        'sample' => $data[0] ?? null,
+    ]);
+});
 
 Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('user', function (Request $request) {

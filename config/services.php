@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // API Services
+    'hris' => [
+        'base_url' => env('HRIS_BASE_URL'),
+        'api_key'  => env('HRIS_API_KEY'),
+        'timeout'  => (int) env('HRIS_TIMEOUT', 10),
+    ],
+
 ];

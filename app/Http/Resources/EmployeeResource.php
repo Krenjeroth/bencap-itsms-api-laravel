@@ -16,18 +16,28 @@ class EmployeeResource extends JsonResource
     {
 
         return [
-            'id' => $this->id,
-            'department' => DepartmentResource::make($this->whenLoaded('department')),
-            'position' => PositionResource::make($this->whenLoaded('position')),
-            'uid' => $this->uid,
-            'firstname' => $this->firstname,
-            'middlename' => $this->middlename,
-            'lastname' => $this->lastname,
-            'suffix' => $this->suffix,
-            'full_name' => $this->full_name,
-            'img_path' => $this->img_path,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // HRIS-native fields
+            'employee_id_number'  => $this['employee_id_number'] ?? null,
+            'fullname'  => $this['fullname'] ?? null,
+            'fname' => $this['fname'] ?? null,
+            'mname' => $this['mname'] ?? null,
+            'lname' => $this['lname'] ?? null,
+
+            'office_desc' => $this['office_desc'] ?? null,
+            'office_code' => $this['office_code'] ?? null,
+            'position_title'  => $this['position_title'] ?? null,
+
+            'type'  => $this['type'] ?? null,
+            'salary_grade_id' => $this['salary_grade_id'] ?? null,
+            'grade' => $this['grade'] ?? null,
+            'division'  => $this['division'] ?? null,
+            'unit'  => $this['unit'] ?? null,
+            'salary'  => $this['salary'] ?? null,
+
+            // Optional aliases for your existing UI conventions
+            // 'firstname' => $this['fname'] ?? null,
+            // 'middlename'  => $this['mname'] ?? null,
+            // 'lastname'  => $this['lname'] ?? null,
         ];
     }
 }

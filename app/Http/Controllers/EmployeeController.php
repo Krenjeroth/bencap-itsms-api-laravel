@@ -7,46 +7,103 @@ use App\Models\Employee;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Services\HrisClientService;
+use Illuminate\Support\Facades\Cache;
 
 class EmployeeController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request, HrisClientService $hris) {
       // Gate::authorize('employee_index');
 
-      $query = Employee::query();
+      $rows = Cache::remember('hris_employees', now()->addMinutes(2), fn () => $hris->getEmployees());
+      $employees = collect($rows);
 
-      // Search by name or email
-      if($request->has('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use($search) {
-          $q->where('uid', 'LIKE', "%{$search}%")
-          ->orWhere('firstname', 'LIKE', "%{$search}%")
-          ->orWhere('lastname', 'LIKE', "%{$search}%");
-        });
+      // SEARCH (searches id/fname/lname/office/position)
+      if ($request->filled('search')) {
+          $search = mb_strtolower($request->input('search'));
+
+          $employees = $employees->filter(function ($e) use ($search) {
+              $haystack = mb_strtolower(implode(' ', array_filter([
+                  $e['employee_id_number'] ?? '',
+                  $e['fname'] ?? '',
+                  $e['mname'] ?? '',
+                  $e['lname'] ?? '',
+                  $e['office_desc'] ?? '',
+                  $e['position_title'] ?? '',
+                  $e['employee_type'] ?? '',
+              ])));
+
+              return str_contains($haystack, $search);
+          })->values();
       }
 
-       // Status filter (active/inactive)
-      if ($request->has('status')) {
-        $query->where('status', $request->status);
+      // STATUS FILTER
+      // HRIS sample has no status field, so this would do nothing meaningful.
+      // You can either ignore it or return empty if they request status.
+      if ($request->filled('status')) {
+          // Option: ignore for now
+          // (or if HRIS later adds a status field, filter here)
       }
 
-      // Sorting (default to ID)
-      if ($request->has('sort')) {
-        $order = $request->input('order', 'asc');
-        $query->orderBy($request->sort, $order);
+      // SORTING
+      // Your frontend likely sends sort keys like uid/firstname/lastname...
+      // Map those to HRIS keys.
+      $sort = $request->input('sort');
+      if ($sort) {
+          $order = strtolower($request->input('order', 'asc')) === 'desc' ? 'desc' : 'asc';
+
+          $sortKeyMap = [
+            'fullname' => 'fullname',
+            'fname' => 'fname',
+            'mname' => 'mname',
+            'lname' => 'lname',
+            'office_desc' => 'office_desc',
+            'office_code' => 'office_code',
+            'position_title' => 'position_title',
+            'type' => 'type',
+            'salary_grade_id' => 'salary_grade_id',
+            'grade' => 'grade',
+            'division' => 'division',
+            'unit' => 'unit',
+            'salary' => 'salary',
+
+            // aliases if your UI sends these
+            'firstname' => 'fname',
+            'lastname' => 'lname',
+          ];
+
+          $hrisKey = $sortKeyMap[$sort] ?? $sort;
+
+          $employees = $employees->sortBy(
+              fn ($e) => $e[$hrisKey] ?? null,
+              SORT_REGULAR,
+              $order === 'desc'
+          )->values();
       }
 
-      // Paginate with customizable per-page count
-      $employees = $query->paginate($request->input('per_page', 5))->appends($request->query());
+      // PAGINATION
+      $perPage = (int) $request->input('per_page', 5);
+      $page = (int) $request->input('page', 1);
+      $total = $employees->count();
+
+      $items = $employees->slice(($page - 1) * $perPage, $perPage)->values();
+
+      $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+          $items,
+          $total,
+          $perPage,
+          $page,
+          ['path' => $request->url(), 'query' => $request->query()]
+      );
 
       return response()->json([
-          'data' => EmployeeResource::collection($employees),
+          'data' => EmployeeResource::collection($paginator->getCollection()),
           'meta' => [
-              'total' => $employees->total(),
-              'per_page' => $employees->perPage(),
-              'current_page' => $employees->currentPage(),
-              'last_page' => $employees->lastPage(),
-          ]
+              'total' => $paginator->total(),
+              'per_page' => $paginator->perPage(),
+              'current_page' => $paginator->currentPage(),
+              'last_page' => $paginator->lastPage(),
+          ],
       ]);
     }
 
@@ -95,5 +152,9 @@ class EmployeeController extends Controller
       return response()->json([
           'data' => EmployeeResource::collection($employees),
       ]);
+    }
+
+    public function getTest() {
+
     }
 }

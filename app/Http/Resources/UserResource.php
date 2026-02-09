@@ -16,8 +16,8 @@ class UserResource extends JsonResource
     {
 
         $user_roles_permissions = $this?->loadMissing('roles.permissions');
-        $profile_departments = $this?->loadMissing('profile.departments');
-        $profile_agencies = $this?->loadMissing('profile.agencies');
+        // $profile_departments = $this?->loadMissing('profile.departments');
+        // $profile_agencies = $this?->loadMissing('profile.agencies');
         $permissions = [];
         $roles = [];
         $offices_assigned = [];
@@ -39,37 +39,37 @@ class UserResource extends JsonResource
           }
         }
 
-        if($profile_departments) {
-          foreach($profile_departments->profile->departments as $department) {
-            $offices_assigned[] = [
-              'id' => $department->id,
-              'abbreviation' => $department->abbreviation,
-            ];
+        // if($profile_departments) {
+        //   foreach($profile_departments->profile->departments as $department) {
+        //     $offices_assigned[] = [
+        //       'id' => $department->id,
+        //       'abbreviation' => $department->abbreviation,
+        //     ];
 
-            $offices_agencies_assigned[] = [
-              'id' => $department->id,
-              'abbreviation' => $department->abbreviation,
-            ];
+        //     $offices_agencies_assigned[] = [
+        //       'id' => $department->id,
+        //       'abbreviation' => $department->abbreviation,
+        //     ];
 
-            $offices_assigned_ids[] = $department->id;
-          }
-        }
+        //     $offices_assigned_ids[] = $department->id;
+        //   }
+        // }
 
-        if($profile_agencies) {
-          foreach($profile_agencies->profile->agencies as $agency) {
-            $agencies_assigned[] = [
-              'id' => $agency->id,
-              'abbreviation' => $agency->abbreviation,
-            ];
+        // if($profile_agencies) {
+        //   foreach($profile_agencies->profile->agencies as $agency) {
+        //     $agencies_assigned[] = [
+        //       'id' => $agency->id,
+        //       'abbreviation' => $agency->abbreviation,
+        //     ];
 
-            $offices_agencies_assigned[] = [
-              'id' => $agency->id,
-              'abbreviation' => $agency->abbreviation,
-            ];
+        //     $offices_agencies_assigned[] = [
+        //       'id' => $agency->id,
+        //       'abbreviation' => $agency->abbreviation,
+        //     ];
 
-            $agencies_assigned_ids[] = $agency->id;
-          }
-        }
+        //     $agencies_assigned_ids[] = $agency->id;
+        //   }
+        // }
 
         return [
           'id' => $this->id,

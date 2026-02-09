@@ -23,7 +23,7 @@ class UpdateInventoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'employee_id' => ['nullable', 'exists:employees,id'],
+            'employee_id' => ['nullable'],
             'item_type_id' => ['nullable', 'exists:item_types,id'],
             'brand_model_id' => ['nullable', 'exists:brand_models,id'],
             'parent_component_id' => ['nullable', 'exists:inventories,id'],

@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
 {
-    protected $with = ['brand_model', 'employee', 'parent_component', 'item_type', 'internal_components'];
+    protected $with = ['brand_model', 'parent_component', 'item_type', 'internal_components'];
+
+    protected $casts = [
+        'employee_id' => 'integer',
+    ];
 
     protected $fillable = [
         'employee_id',
@@ -34,9 +38,9 @@ class Inventory extends Model
       return $this->belongsTo(BrandModel::class);
     }
 
-    public function employee() {
-      return $this->belongsTo(Employee::class);
-    }
+    // public function employee() {
+    //   return $this->belongsTo(Employee::class, 'employee_id');
+    // }
 
     public function parent_component() {
       return $this->belongsTo(Inventory::class, 'parent_component_id');
@@ -67,7 +71,15 @@ class Inventory extends Model
     }
 
     public function getEmployeeFullNameAttribute(): ?string {
-      return $this->employee?->full_name ?: $this->parent_component?->employee?->full_name;
+        // If controller/resource attached HRIS employee payload
+        $fullname = data_get($this, 'employee.fullname');
+        if ($fullname) return $fullname;
+
+        // Fallback: parent component (if it also got attached)
+        $parentFullname = data_get($this, 'parent_component.employee.fullname');
+        if ($parentFullname) return $parentFullname;
+
+        return null;
     }
 
     public function getComputedBrandModelAttribute() {

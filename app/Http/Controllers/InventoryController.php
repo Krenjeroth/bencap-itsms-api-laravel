@@ -4,53 +4,83 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\InventoryResource;
 use App\Models\InventoryInternalComponent;
 use App\Http\Requests\StoreInventoryRequest;
 use App\Http\Requests\UpdateInventoryRequest;
+use Illuminate\Support\Facades\Cache;
+use App\Services\HrisClientService;
 
 class InventoryController extends Controller
 {
-    public function index(Request $request) {
-      // Gate::authorize('item_type_index');
+    public function index(Request $request, HrisClientService $hris) {
+        $search  = trim((string) $request->get('search', ''));
+        $perPage = (int) $request->get('per_page', 10);
 
-      // might only show System Unit Components / Parent components
-      // Child components will be shown in the parent component expandable details.
-      $query = Inventory::query();
+        $query = Inventory::query();
 
-      if($request->has('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use($search) {
-          $q->where('property_number', 'LIKE', "%{$search}%")
-          // ->orWhere('parent_component', 'LIKE', "%{$search}%")
-          ->orWhere('serial_number', 'LIKE', "%{$search}%");
-          // ->orWhere('description', 'LIKE', "%{$search}%");
-        });
-      }
+        // Build employee map once (cached) and attach to request for InventoryResource use
+        $employeeMap = collect($hris->getEmployeesCached())
+            ->filter(fn ($e) => isset($e['id']))
+            ->keyBy(fn ($e) => (int) $e['id']);
 
-      if ($request->has('classification')) {
-        $query->where('classification', $request->classification);
-      }
+        // ✅ Search by employee name (letters) -> filter inventories by employee_id (HRIS table id)
+        if ($search !== '' && preg_match('/[a-zA-Z]/', $search)) {
+            $needle = mb_strtolower($search);
 
-      // Sorting (default to ID)
-      if ($request->has('sort')) {
-        $order = $request->input('order', 'asc');
-        $query->orderBy($request->sort, $order);
-      }
+            $ids = $employeeMap
+                ->filter(function ($e) use ($needle) {
+                    $name = mb_strtolower($e['fullname'] ?? $e['full_name'] ?? '');
+                    return $name !== '' && str_contains($name, $needle);
+                })
+                ->keys()
+                ->map(fn ($v) => (int) $v)
+                ->values()
+                ->all();
 
-      // Paginate with customizable per-page count
-      $inventories = $query->paginate($request->input('per_page', 5))->appends($request->query());
+            if (empty($ids)) {
+                $inventories = $query->whereRaw('1=0')->latest()->paginate($perPage);
 
-      return response()->json([
-          'data' => InventoryResource::collection($inventories),
-          'meta' => [
-              'total' => $inventories->total(),
-              'per_page' => $inventories->perPage(),
-              'current_page' => $inventories->currentPage(),
-              'last_page' => $inventories->lastPage(),
-          ]
-      ]);
+                // ✅ attach map even when empty (resource uses it)
+                $request->attributes->set('employeeMap', $employeeMap);
+
+                return response()->json([
+                    'data' => InventoryResource::collection($inventories),
+                    'meta' => [
+                        'total' => $inventories->total(),
+                        'per_page' => $inventories->perPage(),
+                        'current_page' => $inventories->currentPage(),
+                        'last_page' => $inventories->lastPage(),
+                    ]
+                ]);
+            }
+
+            $query->whereIn('employee_id', $ids);
+        }
+
+        // ✅ Search by inventory fields (numbers/others)
+        if ($search !== '' && !preg_match('/[a-zA-Z]/', $search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('property_number', 'like', "%{$search}%")
+                  ->orWhere('serial_number', 'like', "%{$search}%");
+            });
+        }
+
+        $inventories = $query->latest()->paginate($perPage);
+
+        // ✅ Make employee map available inside InventoryResource
+        $request->attributes->set('employeeMap', $employeeMap);
+
+        // ✅ Preserve your response shape + meta
+        return response()->json([
+            'data' => InventoryResource::collection($inventories),
+            'meta' => [
+                'total' => $inventories->total(),
+                'per_page' => $inventories->perPage(),
+                'current_page' => $inventories->currentPage(),
+                'last_page' => $inventories->lastPage(),
+            ]
+        ]);
     }
 
     public function store(StoreInventoryRequest $request) {

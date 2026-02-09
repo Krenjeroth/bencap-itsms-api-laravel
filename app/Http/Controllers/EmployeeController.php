@@ -98,6 +98,7 @@ class EmployeeController extends Controller
 
       return response()->json([
           'data' => EmployeeResource::collection($paginator->getCollection()),
+          // 'data' => $paginator->getCollection(),
           'meta' => [
               'total' => $paginator->total(),
               'per_page' => $paginator->perPage(),
@@ -135,23 +136,49 @@ class EmployeeController extends Controller
       return new EmployeeResource($employee);
     }
 
-    public function search(Request $request) {
-      $query = $request->get('q');
-      $limit = (int) $request->get('limit', 20);
-      $page = (int) $request->get('page', 1);
-      $offset = ($page - 1) * $limit;
+    public function search(Request $request, HrisClientService $hris) {
+        $q = trim((string) $request->get('q', ''));
+        $limit = (int) $request->get('limit', 20);
 
-      $employees = Employee::query()
-          ->when($query, fn($qBuilder) =>
-              $qBuilder->where('full_name', 'like', "%$query%")
-          )
-          ->offset($offset)
-          ->limit($limit)
-          ->get();
+        if (mb_strlen($q) < 2 && !$request->hasAny(['employee_id', 'office_id', 'type'])) {
+            return response()->json(['data' => []]);
+        }
 
-      return response()->json([
-          'data' => EmployeeResource::collection($employees),
-      ]);
+        // 1) Pull allowed filters from request (scalable)
+        $allowed = array_keys(config('hris.employee_filters', []));
+        $filters = $request->only($allowed);
+
+        // 2) Smart inference: if q looks like an employee_id, treat it as employee_id unless explicitly provided
+        if (!isset($filters['employee_id']) && preg_match('/^\d{6,}$/', $q)) {
+            $filters['employee_id'] = $q;
+        }
+
+        // 3) Call HRIS with filters (employee_id/office_id/type)
+        $rows = $hris->getEmployeesWithParams($filters);
+
+        // 4) If HRIS didn't filter by name (most likely), do local filtering by fullname if q is not employee_id
+        $didUseEmployeeId = isset($filters['employee_id']) && $filters['employee_id'] === $q;
+
+        if ($q !== '' && !$didUseEmployeeId) {
+            $needle = mb_strtolower($q);
+            $rows = collect($rows)->filter(function ($e) use ($needle) {
+                $name = mb_strtolower($e['fullname'] ?? $e['full_name'] ?? '');
+                return $name !== '' && str_contains($name, $needle);
+            })->values()->all();
+        }
+
+        // 5) Limit + normalize for dropdown
+        $data = collect($rows)->take($limit)->map(fn ($e) => [
+            'id' => $e['id'] ?? null,
+            'employee_id_number' => $e['employee_id_number'] ?? null,
+            'full_name' => $e['fullname'] ?? $e['full_name'] ?? null,
+            'office_id' => $e['office_id'] ?? null,
+            'office_code' => $e['office_code'] ?? null,
+            'position_title' => $e['position_title'] ?? null,
+            'type' => $e['type'] ?? null,
+        ])->filter(fn ($e) => $e['id'] && $e['employee_id_number'] && $e['full_name'])->values();
+
+        return response()->json(['data' => $data]);
     }
 
     public function getTest() {

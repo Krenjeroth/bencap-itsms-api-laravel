@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             // Basic Information
-            $table->foreignId('employee_id')->comment('Issued To')->nullable()
-              ->constrained()
-              ->nullOnDelete();
+            // $table->foreignId('employee_id')->comment('Issued To')->nullable()
+            //   ->constrained()
+            //   ->nullOnDelete();
+
+            $table->unsignedBigInteger('employee_id')->nullable()->comment('Issued To (HRIS employee PK id)');
+            $table->index('employee_id');
+
             $table->foreignId('item_type_id')->nullable() // The general classification of the physical asset.
               ->constrained()
               ->nullOnDelete();

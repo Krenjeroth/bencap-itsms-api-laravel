@@ -17,11 +17,12 @@ class EmployeeResource extends JsonResource
 
         return [
             // HRIS-native fields
+            'id' => $this['id'] ?? null,
             'employee_id_number'  => $this['employee_id_number'] ?? null,
-            'fullname'  => $this['fullname'] ?? null,
-            'fname' => $this['fname'] ?? null,
-            'mname' => $this['mname'] ?? null,
-            'lname' => $this['lname'] ?? null,
+            'full_name'  => $this['fullname'] ?? null,
+            'first_name' => $this['fname'] ?? null,
+            'middle_name' => $this['mname'] ?? null,
+            'last_name' => $this['lname'] ?? null,
 
             'office_desc' => $this['office_desc'] ?? null,
             'office_code' => $this['office_code'] ?? null,
@@ -33,6 +34,10 @@ class EmployeeResource extends JsonResource
             'division'  => $this['division'] ?? null,
             'unit'  => $this['unit'] ?? null,
             'salary'  => $this['salary'] ?? null,
+
+            // keep these too if you want them
+            'office_full' => $this['office_full'] ?? null,
+            'position_type' => $this['position_type'] ?? null,
 
             // Optional aliases for your existing UI conventions
             // 'firstname' => $this['fname'] ?? null,

@@ -36,7 +36,7 @@ class HrisClientService
 
     public function getEmployeesCached(int $minutes = 30): array {
         return Cache::remember('hris:employees:all', now()->addMinutes($minutes), function () {
-            return $this->getEmployeesWithParams([]); // will be normalized below
+            return $this->getEmployees(); // call raw, don't double-cache
         });
     }
 
@@ -83,5 +83,14 @@ class HrisClientService
             ->take($limit)
             ->values()
             ->all();
+    }
+
+    public function getOffices(): array {
+        $baseUrl = rtrim(config('services.hris.base_url'), '/');
+
+        $resp = $this->request()->get($baseUrl . '/getOffices');
+        $resp->throw();
+
+        return $resp->json() ?? [];
     }
 }

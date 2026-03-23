@@ -15,63 +15,97 @@ class InventoryController extends Controller
 {
     public function index(Request $request, HrisClientService $hris) {
         $search  = trim((string) $request->get('search', ''));
-        $perPage = (int) $request->get('per_page', 10);
+        $tab     = (string) $request->get('tab', 'all');
+        $perPage = (int) $request->input('per_page', 10);
+        $page    = (int) $request->input('page', 1);
 
-        $query = Inventory::query();
-
-        // Build employee map once (cached) and attach to request for InventoryResource use
+        // ✅ HRIS employee map for InventoryResource
         $employeeMap = collect($hris->getEmployeesCached())
             ->filter(fn ($e) => isset($e['id']))
             ->keyBy(fn ($e) => (int) $e['id']);
 
-        // ✅ Search by employee name (letters) -> filter inventories by employee_id (HRIS table id)
-        if ($search !== '' && preg_match('/[a-zA-Z]/', $search)) {
-            $needle = mb_strtolower($search);
-
-            $ids = $employeeMap
-                ->filter(function ($e) use ($needle) {
-                    $name = mb_strtolower($e['fullname'] ?? $e['full_name'] ?? '');
-                    return $name !== '' && str_contains($name, $needle);
-                })
-                ->keys()
-                ->map(fn ($v) => (int) $v)
-                ->values()
-                ->all();
-
-            if (empty($ids)) {
-                $inventories = $query->whereRaw('1=0')->latest()->paginate($perPage);
-
-                // ✅ attach map even when empty (resource uses it)
-                $request->attributes->set('employeeMap', $employeeMap);
-
-                return response()->json([
-                    'data' => InventoryResource::collection($inventories),
-                    'meta' => [
-                        'total' => $inventories->total(),
-                        'per_page' => $inventories->perPage(),
-                        'current_page' => $inventories->currentPage(),
-                        'last_page' => $inventories->lastPage(),
-                    ]
-                ]);
-            }
-
-            $query->whereIn('employee_id', $ids);
-        }
-
-        // ✅ Search by inventory fields (numbers/others)
-        if ($search !== '' && !preg_match('/[a-zA-Z]/', $search)) {
-            $query->where(function ($q) use ($search) {
-                $q->where('property_number', 'like', "%{$search}%")
-                  ->orWhere('serial_number', 'like', "%{$search}%");
-            });
-        }
-
-        $inventories = $query->latest()->paginate($perPage);
-
-        // ✅ Make employee map available inside InventoryResource
         $request->attributes->set('employeeMap', $employeeMap);
 
-        // ✅ Preserve your response shape + meta
+        // ---------------------------
+        // 1) BASE QUERY (shared by list + counts)
+        // ---------------------------
+        $baseQuery = Inventory::query();
+
+        // ✅ Search
+        if ($search !== '') {
+            // Name search -> resolve HRIS IDs -> filter inventories.employee_id
+            if (preg_match('/[a-zA-Z]/', $search)) {
+                $needle = mb_strtolower($search);
+
+                $ids = $employeeMap
+                    ->filter(function ($e) use ($needle) {
+                        $name = mb_strtolower($e['fullname'] ?? $e['full_name'] ?? '');
+                        return $name !== '' && str_contains($name, $needle);
+                    })
+                    ->keys()
+                    ->map(fn ($v) => (int) $v)
+                    ->values()
+                    ->all();
+
+                // no matches => empty
+                if (empty($ids)) {
+                    $baseQuery->whereRaw('1=0');
+                } else {
+                    $baseQuery->whereIn('employee_id', $ids);
+                }
+            } else {
+                // Inventory field search
+                $baseQuery->where(function ($q) use ($search) {
+                    $q->where('property_number', 'like', "%{$search}%")
+                      ->orWhere('serial_number', 'like', "%{$search}%");
+                });
+            }
+        }
+
+        // ---------------------------
+        // 2) APPLY TAB FILTER
+        // ---------------------------
+        $applyTab = function ($q) use ($tab) {
+            switch ($tab) {
+                case 'parent_components':
+                    $q->whereNull('parent_component_id');
+                    break;
+
+                case 'child_components':
+                    $q->whereNotNull('parent_component_id');
+                    break;
+
+                case 'all':
+                default:
+                    // no filter
+                    break;
+            }
+        };
+
+        $query = (clone $baseQuery);
+        $applyTab($query);
+
+        // ✅ Sorting (optional)
+        if ($request->filled('sort')) {
+            $order = $request->input('order', 'asc');
+            $query->orderBy($request->sort, $order);
+        } else {
+            $query->latest();
+        }
+
+        $inventories = $query
+            ->paginate($perPage, ['*'], 'page', $page)
+            ->appends($request->query());
+
+        // ---------------------------
+        // 3) COUNTS (respect search; count per tab)
+        // ---------------------------
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'parent_components' => (clone $baseQuery)->whereNull('parent_component_id')->count(),
+            'child_components' => (clone $baseQuery)->whereNotNull('parent_component_id')->count(),
+        ];
+
         return response()->json([
             'data' => InventoryResource::collection($inventories),
             'meta' => [
@@ -79,9 +113,11 @@ class InventoryController extends Controller
                 'per_page' => $inventories->perPage(),
                 'current_page' => $inventories->currentPage(),
                 'last_page' => $inventories->lastPage(),
-            ]
+                'counts' => $counts,
+            ],
         ]);
     }
+
 
     public function store(StoreInventoryRequest $request) {
       // Gate::authorize('item_store');

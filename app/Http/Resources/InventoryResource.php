@@ -59,6 +59,7 @@ class InventoryResource extends JsonResource
 
             // ✅ (Optional) include full employee payload from HRIS
             'employee' => $employee,
+            'brand_model' => BrandModelResource::make($this->whenLoaded('brand_model')),
 
             'item_type' => $item_type,
             // 'brand_model' => $computed_brand_model,

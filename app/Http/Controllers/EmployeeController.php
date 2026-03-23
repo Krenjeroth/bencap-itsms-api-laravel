@@ -15,7 +15,7 @@ class EmployeeController extends Controller
     public function index(Request $request, HrisClientService $hris) {
       // Gate::authorize('employee_index');
 
-      $rows = Cache::remember('hris_employees', now()->addMinutes(2), fn () => $hris->getEmployees());
+      $rows = $hris->getEmployeesCached(minutes: 5);
       $employees = collect($rows);
 
       // SEARCH (searches id/fname/lname/office/position)

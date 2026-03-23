@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
 
   Route::apiResource('positions', PositionController::class);
 
-  Route::apiResource('employees', EmployeeController::class);
+  Route::apiResource('employees', EmployeeController::class)->only(['index', 'show']); // Only allow index and show, not create, update, or delete
 
   Route::apiResource('brands', BrandController::class);
 

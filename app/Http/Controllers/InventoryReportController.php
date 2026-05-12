@@ -95,10 +95,14 @@ class InventoryReportController extends Controller
         $query = Inventory::query()
             ->with([
                 'item_type',
-                'brand_model',
+                'brand_model.brand',
+                'brand_model.item_type',
                 'parent_component',
-                'parent_component.brand_model',
+                'parent_component.brand_model.brand',
+                'parent_component.brand_model.item_type',
                 'parent_component.item_type',
+                'internal_components.brand_model.brand',
+                'internal_components.brand_model.item_type',
             ]);
 
         if ($request->filled('item_type')) {
@@ -136,41 +140,73 @@ class InventoryReportController extends Controller
             ->orderBy('property_number')
             ->get()
             ->map(function ($inventory) use ($employeeMap) {
-                $employee = $employeeMap->get((int) $inventory->employee_id);
+              $employee = $employeeMap->get((int) $inventory->employee_id);
 
-                $employeeName =
-                    data_get($employee, 'fullname') ?:
-                    data_get($employee, 'full_name');
+              $employeeName =
+                  data_get($employee, 'fullname') ?:
+                  data_get($employee, 'full_name');
 
-                $office =
-                    data_get($employee, 'office_desc') ?:
-                    data_get($employee, 'office_code');
+              $office =
+                  data_get($employee, 'office_desc') ?:
+                  data_get($employee, 'office_code');
 
-                return [
-                    'property_number' => $this->cleanPdfText($inventory->property_number),
-                    'employee_name' => $this->cleanPdfText($employeeName),
-                    'office' => $this->cleanPdfText($office),
-                    'division_section' => $this->cleanPdfText(
-                        data_get($employee, 'division_section')
-                        ?: data_get($employee, 'division')
-                        ?: data_get($employee, 'section')
-                        ?: data_get($employee, 'division_desc')
-                        ?: data_get($employee, 'section_desc')
-                    ),
-                    'item_type' => $this->cleanPdfText($inventory->item_type?->type),
-                    'brand_model' => $this->cleanPdfText(
-                        $inventory->brand_model?->option_attribute_description
-                        ?? $inventory->brand_model?->specification
-                    ),
-                    'serial_number' => $this->cleanPdfText($inventory->serial_number),
-                    'status' => $this->cleanPdfText($inventory->status),
-                    'date_acquired' => $this->cleanPdfText(
-                        $inventory->date_acquired
-                            ? Carbon::parse($inventory->date_acquired)->format('F d, Y')
-                            : ''
-                    ),
-                ];
-            });
+              $brandModelDisplay = $this->formatBrandModel($inventory->brand_model);
+
+              $childComponentsDisplay = $inventory->internal_components
+                  ->map(function ($component) {
+                      $componentBrandModel = $this->formatBrandModel($component->brand_model);
+
+                      $parts = [];
+
+                      if ($componentBrandModel) {
+                          $parts[] = $componentBrandModel;
+                      }
+
+                      if ($component->slot) {
+                          $parts[] = 'Slot: ' . $component->slot;
+                      }
+
+                      if ($component->quantity) {
+                          $parts[] = 'Qty: ' . $component->quantity;
+                      }
+
+                      if ($component->specific_serial_number) {
+                          $parts[] = 'SN: ' . $component->specific_serial_number;
+                      }
+
+                      if ($component->notes) {
+                          $parts[] = 'Notes: ' . $component->notes;
+                      }
+
+                      return implode(' | ', $parts);
+                  })
+                  ->filter()
+                  ->values()
+                  ->implode("\n");
+
+              return [
+                  'property_number' => $this->cleanPdfText($inventory->property_number),
+                  'employee_name' => $this->cleanPdfText($employeeName),
+                  'office' => $this->cleanPdfText($office),
+                  'division_section' => $this->cleanPdfText(
+                      data_get($employee, 'division_section')
+                      ?: data_get($employee, 'division')
+                      ?: data_get($employee, 'section')
+                      ?: data_get($employee, 'division_desc')
+                      ?: data_get($employee, 'section_desc')
+                  ),
+                  'item_type' => $this->cleanPdfText($inventory->item_type?->type),
+                  'brand_model' => $this->cleanPdfText($brandModelDisplay),
+                  'child_components' => $this->cleanPdfText($childComponentsDisplay),
+                  'serial_number' => $this->cleanPdfText($inventory->serial_number),
+                  'status' => $this->cleanPdfText($inventory->status),
+                  'date_acquired' => $this->cleanPdfText(
+                      $inventory->date_acquired
+                          ? Carbon::parse($inventory->date_acquired)->format('F d, Y')
+                          : ''
+                  ),
+              ];
+          });
     }
 
     private function getReportQuery(Request $request) {
@@ -211,5 +247,25 @@ class InventoryReportController extends Controller
         $value = preg_replace('/[^\P{C}\n\r\t]+/u', '', $value);
 
         return trim($value);
+    }
+
+    private function formatBrandModel($brandModel): string {
+        if (! $brandModel) {
+            return '';
+        }
+
+        $itemType = trim((string) data_get($brandModel, 'item_type.type'));
+        $specification = trim((string) data_get($brandModel, 'specification'));
+        $name = trim((string) data_get($brandModel, 'name'));
+        $brand = trim((string) data_get($brandModel, 'brand.name'));
+
+        $parts = array_filter([
+            $itemType,
+            $specification,
+            $name,
+            $brand,
+        ], fn ($value) => $value !== '');
+
+        return implode(', ', $parts);
     }
 }

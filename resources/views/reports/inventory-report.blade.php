@@ -65,6 +65,7 @@
             padding: 5px 6px;
             vertical-align: top;
             word-wrap: break-word;
+            white-space: normal;
         }
 
         .report-table th {
@@ -79,14 +80,13 @@
         }
 
         .no-col { width: 4%; }
-        .property-col { width: 10%; }
+        .property-col { width: 11%; }
         .employee-col { width: 14%; }
-        .division-col { width: 14%; }
-        .office-col { width: 10%; }
-        .item-type-col { width: 11%; }
-        .brand-col { width: 18%; }
-        .serial-col { width: 11%; }
-        .status-col { width: 8%; }
+        .division-col { width: 13%; }
+        .office-col { width: 11%; }
+        .item-type-col { width: 10%; }
+        .brand-col { width: 16%; }
+        .components-col { width: 21%; }
 
         .no-records td {
             text-align: center;
@@ -161,7 +161,7 @@
                 <th class="office-col">DATE ACQUIRED</th>
                 <th class="item-type-col">ITEM TYPE</th>
                 <th class="brand-col">BRAND / MODEL</th>
-                <th class="serial-col">SERIAL NUMBER</th>
+                <th class="components-col">CHILD COMPONENTS</th>
             </tr>
         </thead>
         <tbody>
@@ -174,11 +174,11 @@
                     <td>{{ $row['date_acquired'] ?: '—' }}</td>
                     <td>{{ $row['item_type'] ?: '—' }}</td>
                     <td>{{ $row['brand_model'] ?: '—' }}</td>
-                    <td>{{ $row['serial_number'] ?: '—' }}</td>
+                    <td style="white-space: pre-line;">{{ $row['child_components'] ?: '—' }}</td>
                 </tr>
             @empty
                 <tr class="no-records">
-                    <td colspan="9">No records found.</td>
+                    <td colspan="8">No records found.</td>
                 </tr>
             @endforelse
         </tbody>

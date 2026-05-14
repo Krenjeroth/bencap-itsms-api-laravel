@@ -5,11 +5,26 @@ namespace App\Exports;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class InventoryReportExport implements FromCollection, WithHeadings
+class InventoryReportExport implements WithMultipleSheets
 {
-    public function __construct(private Collection $rows)
+    public function __construct(
+        private Collection $rows,
+        private array $filters = [],
+        private string $generatedAt = '',
+    ) {}
+
+    public function sheets(): array
     {
+        return [
+            new InventoryReportMainSheet($this->rows, $this->filters, $this->generatedAt),
+            new InventoryReportSummarySheet($this->rows),
+        ];
     }
 
     public function collection()

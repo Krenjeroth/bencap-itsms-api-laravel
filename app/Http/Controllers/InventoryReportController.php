@@ -14,14 +14,79 @@ use Carbon\Carbon;
 
 class InventoryReportController extends Controller
 {
-    public function exportExcel(Request $request, HrisClientService $hris)
-    {
-        $rows = $this->getReportRows($request, $hris);
+    public function exportExcel(Request $request, HrisClientService $hris) {
+        try {
+            $rows = $this->getReportRows($request, $hris);
 
-        return Excel::download(
-            new InventoryReportExport($rows),
-            'inventory-report-' . now()->format('Y-m-d-His') . '.xlsx'
-        );
+            $employees = collect($hris->getEmployeesCached());
+            $itemType  = ItemType::find($request->input('item_type'));
+            $employee  = $employees->firstWhere('id', (int) $request->input('employee'));
+
+            $officeDesc = null;
+            $officeCode = null;
+
+            if ($request->filled('office')) {
+                $officeId = (string) $request->input('office');
+
+                $matchedEmployee = $employees->first(
+                    fn ($e) => (string) data_get($e, 'office_id') === $officeId
+                );
+
+                $officeDesc = data_get($matchedEmployee, 'office_desc');
+                $officeCode = data_get($matchedEmployee, 'office_code');
+            }
+
+            $filters = [
+                'item_type' => $itemType?->type ?? 'All',
+                'employee'  => data_get($employee, 'fullname')
+                    ?: data_get($employee, 'full_name')
+                    ?: 'All',
+                'office'    => $officeDesc ?: 'All',
+                'status'    => $this->cleanPdfText($request->input('status')) ?: 'All',
+            ];
+
+            $generatedAt = now()->format('F d, Y h:i A');
+
+            // Build filename
+            $filenameParts = ['Inventory-Report'];
+
+            if (!empty($officeCode)) {
+                $filenameParts[] = $officeCode;
+            }
+            if (!empty($filters['employee']) && $filters['employee'] !== 'All') {
+                $filenameParts[] = $filters['employee'];
+            }
+            if (!empty($filters['item_type']) && $filters['item_type'] !== 'All') {
+                $filenameParts[] = $filters['item_type'];
+            }
+            if (!empty($filters['status']) && $filters['status'] !== 'All') {
+                $filenameParts[] = $filters['status'];
+            }
+
+            $filenameParts[] = now()->format('Y-m-d_Hi');
+
+            $filename = implode('_', array_map(
+                fn ($part) => preg_replace('/[^A-Za-z0-9\-]/', '-', $part),
+                $filenameParts
+            )) . '.xlsx';
+
+            return Excel::download(
+                new InventoryReportExport($rows, $filters, $generatedAt),
+                $filename
+            );
+
+        } catch (\Throwable $e) {
+            Log::error('Inventory Excel export failed', [
+                'message' => $e->getMessage(),
+                'line'    => $e->getLine(),
+                'file'    => $e->getFile(),
+            ]);
+
+            return response()->json([
+                'message' => 'Failed to generate Excel report.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function exportPdf(Request $request, HrisClientService $hris) {
@@ -33,15 +98,18 @@ class InventoryReportController extends Controller
             $employee = $employees->firstWhere('id', (int) $request->input('employee'));
 
             $officeDesc = null;
+            $officeCode = null;
+
             if ($request->filled('office')) {
                 $officeId = (string) $request->input('office');
 
-                $officeDesc = $employees
+                $matchedEmployee = $employees
                     ->first(function ($employee) use ($officeId) {
                         return (string) data_get($employee, 'office_id') === $officeId;
                     });
 
-                $officeDesc = data_get($officeDesc, 'office_desc');
+                $officeDesc = data_get($matchedEmployee, 'office_desc');
+                $officeCode = data_get($matchedEmployee, 'office_code');
             }
 
             $filters = [
@@ -71,7 +139,37 @@ class InventoryReportController extends Controller
                 ob_end_clean();
             }
 
-            return $pdf->download('inventory-report-' . now()->format('Y-m-d-His') . '.pdf');
+            $filenameParts = ['Inventory-Report'];
+
+            if (!empty($officeCode)) {
+                $filenameParts[] = $officeCode;
+            }
+
+            if (!empty($filters['employee']) && $filters['employee'] !== 'All') {
+                $filenameParts[] = $filters['employee'];
+            }
+
+            if (!empty($filters['item_type']) && $filters['item_type'] !== 'All') {
+                $filenameParts[] = $filters['item_type'];
+            }
+
+            if (!empty($filters['status']) && $filters['status'] !== 'All') {
+                $filenameParts[] = $filters['status'];
+            }
+
+            $filenameParts[] = now()->format('Y-m-d_Hi');
+
+            $filename = implode('_', array_map(
+                fn ($part) => preg_replace('/[^A-Za-z0-9\-]/', '-', $part),
+                $filenameParts
+            )) . '.pdf';
+
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            return $pdf->download($filename);
+
         } catch (\Throwable $e) {
             Log::error('Inventory PDF export failed', [
                 'message' => $e->getMessage(),
@@ -121,9 +219,7 @@ class InventoryReportController extends Controller
             $officeId = (string) $request->input('office');
 
             $employeeIds = $employeeMap
-                ->filter(function ($employee) use ($officeId) {
-                    return (string) data_get($employee, 'office_id') === $officeId;
-                })
+                ->filter(fn ($e) => (string) data_get($e, 'office_id') === $officeId)
                 ->keys()
                 ->map(fn ($id) => (int) $id)
                 ->values()
@@ -132,7 +228,12 @@ class InventoryReportController extends Controller
             if (empty($employeeIds)) {
                 $query->whereRaw('1 = 0');
             } else {
-                $query->whereIn('employee_id', $employeeIds);
+                $query->where(function ($q) use ($employeeIds) {
+                    $q->whereIn('employee_id', $employeeIds)
+                      ->orWhereHas('parent_component', function ($q2) use ($employeeIds) {
+                          $q2->whereIn('employee_id', $employeeIds);
+                      });
+                });
             }
         }
 

@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('ticket_assessments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('ticket_id')->constrained()->cascadeOnDelete();
+            $table->text('findings');
+            $table->text('recommendations');
+            $table->boolean('replacement_available')->default(false);
+            $table->text('specifications')->nullable();
+            $table->json('components')->nullable();
+            $table->string('reviewed_by');
+            $table->string('reviewed_by_position')->nullable();
+            $table->string('assessed_by');
+            $table->string('assessed_by_position')->nullable();
             $table->timestamps();
         });
     }

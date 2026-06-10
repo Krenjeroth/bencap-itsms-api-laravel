@@ -132,7 +132,7 @@
 
     <table class="meta-table">
         <tr>
-            <td class="meta-label">Generated On</td>
+            <td class="meta-label">Generated as of</td>
             <td>{{ $generatedAt->format('Y-m-d h:i A') }}</td>
             <td class="meta-label">Total Records</td>
             <td>{{ count($rows) }}</td>

@@ -26,6 +26,7 @@ use App\Http\Controllers\MeasurementUnitController;
 use App\Http\Controllers\OfficeController;
 use App\Services\HrisClientService;
 use App\Http\Controllers\InventoryReportController;
+use App\Http\Controllers\OtherItServiceRequestController;
 
 Route::middleware('auth:sanctum')->get('/hris/debug/employees', function (HrisClientService $hris) {
     $data = $hris->getEmployees();
@@ -142,8 +143,18 @@ Route::group(['middleware' => ['auth:sanctum', AuthGates::class]], function () {
   Route::get('inventories-main-asset-search', [InventoryController::class, 'searchMainAsset']);
 
   // Reports
+
+  // Inventories
   Route::get('/inventories/reports/excel', [InventoryReportController::class, 'exportExcel']);
   Route::get('/inventories/reports/pdf', [InventoryReportController::class, 'exportPdf']);
+
+  // Requests
+  // ----- Other IT Service Requests ---- //
+  Route::apiResource('other-it-service-requests', OtherItServiceRequestController::class);
+  Route::get(
+      'other-it-service-requests/{otherItServiceRequest}/print',
+      [OtherItServiceRequestController::class, 'print']
+  );
 
   // Heartbeat Routes
 

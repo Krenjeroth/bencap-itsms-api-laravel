@@ -88,8 +88,8 @@ class OtherItServiceRequestController extends Controller
         try {
             $pdf = Pdf::loadView('reports.other-it-service-request', [
                 'requestRecord' => $otherItServiceRequest,
-                'generatedAt' => now(),
-            ])->setPaper('a4', 'portrait');
+                'generatedAt'   => now(),
+            ])->setPaper('letter', 'portrait');
 
             while (ob_get_level() > 0) {
                 ob_end_clean();

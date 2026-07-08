@@ -230,42 +230,53 @@ class InventoryReportController extends Controller
         }
 
         if ($request->filled('office')) {
-            $officeId = (string) $request->input('office');
+            $officeId = (int) $request->input('office');
 
-            $employeeIds = $employeeMap
-                ->filter(fn ($e) => (string) data_get($e, 'office_id') === $officeId)
-                ->keys()
-                ->map(fn ($id) => (int) $id)
-                ->values()
-                ->all();
-
-            if (empty($employeeIds)) {
-                $query->whereRaw('1 = 0');
-            } else {
-                $query->where(function ($q) use ($employeeIds) {
-                    $q->whereIn('employee_id', $employeeIds)
-                      ->orWhereHas('parent_component', function ($q2) use ($employeeIds) {
-                          $q2->whereIn('employee_id', $employeeIds);
-                      });
-                });
-            }
+            $query->where(function ($q) use ($officeId) {
+                $q->where('office_id', $officeId)
+                  ->orWhereHas('parent_component', function ($q2) use ($officeId) {
+                      $q2->where('office_id', $officeId);
+                  });
+            });
         }
 
         return $query
           ->orderBy('property_number')
           ->get()
           ->map(function ($inventory) use ($employeeMap) {
-              $employee = $employeeMap->get((int) $inventory->employee_id);
+              $effectiveEmployeeId = $inventory->employee_id ?: $inventory->parent_component?->employee_id;
+              $employee = $employeeMap->get((int) $effectiveEmployeeId);
 
               $employeeName =
                   data_get($employee, 'fullname') ?:
                   data_get($employee, 'full_name');
 
-              $office =
+              $employeeOffice =
                   data_get($employee, 'office_desc') ?:
                   data_get($employee, 'office_code');
 
+              $divisionSection =
+                  data_get($employee, 'division_section')
+                  ?: data_get($employee, 'division')
+                  ?: data_get($employee, 'section')
+                  ?: data_get($employee, 'division_desc')
+                  ?: data_get($employee, 'section_desc');
+
+              $employeeDisplay = $employeeName ?: '';
+              if ($employeeOffice) {
+                  $employeeDisplay .= ($employeeDisplay ? "\n" : '') . '(' . $employeeOffice . ')';
+              }
+
+              $inventoryOffice = $inventory->office_name ?: $inventory->parent_component?->office_name;
+
+
               $brandModelDisplay = $this->formatBrandModel($inventory->brand_model);
+
+              $propertyNumberDisplay = $inventory->property_number ?: '';
+
+              if ($inventory->parent_component?->property_number) {
+                  $propertyNumberDisplay .= ($propertyNumberDisplay ? "\n" : '') . '(Parent: ' . $inventory->parent_component->property_number . ')';
+              }
 
               $childComponentsDisplay = $inventory->internal_components
                   ->map(function ($component) {
@@ -310,16 +321,10 @@ class InventoryReportController extends Controller
                   : false;
 
               return [
-                  'property_number'  => $this->cleanPdfText($inventory->property_number),
-                  'employee_name'    => $this->cleanPdfText($employeeName),
-                  'office'           => $this->cleanPdfText($office),
-                  'division_section' => $this->cleanPdfText(
-                      data_get($employee, 'division_section')
-                      ?: data_get($employee, 'division')
-                      ?: data_get($employee, 'section')
-                      ?: data_get($employee, 'division_desc')
-                      ?: data_get($employee, 'section_desc')
-                  ),
+                  'property_number'  => $this->cleanPdfText($propertyNumberDisplay),
+                  'employee_name'    => $this->cleanPdfText($employeeDisplay),
+                  'office'           => $this->cleanPdfText($inventoryOffice),
+                  'division_section' => $this->cleanPdfText($divisionSection),
                   'item_type'        => $this->cleanPdfText($inventory->item_type?->type),
                   'brand_model'      => $this->cleanPdfText($brandModelDisplay),
                   'child_components' => $this->cleanPdfText($childComponentsDisplay),

@@ -196,7 +196,7 @@
             <td>{{ $filters['employee'] ?: 'All' }}</td>
         </tr>
         <tr>
-            <td class="meta-label">Office</td>
+            <td class="meta-label">Office (Item Location)</td>
             <td>{{ $filters['office'] ?: 'All' }}</td>
             <td class="meta-label">Status</td>
             <td>{{ $filters['status'] ?: 'All' }}</td>
@@ -215,7 +215,7 @@
         <thead>
             <tr>
                 <th class="no-col">NO.</th>
-                <th class="division-col">DIVISION / SECTION</th>
+                {{-- <th class="division-col">DIVISION / SECTION</th> --}}
                 <th class="employee-col">ACTUAL USER</th>
                 <th class="property-col">PROPERTY NUMBER</th>
                 <th class="office-col">DATE ACQUIRED</th>
@@ -228,10 +228,10 @@
             @forelse ($rows as $index => $row)
                 <tr class="{{ $row['is_obsolete'] ? 'eol-row' : '' }} {{ $row['is_primary'] ? 'primary-row' : '' }}">
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $row['division_section'] ?: '—' }}</td>
-                    <td>{{ $row['employee_name'] ?: '—' }}</td>
-                    <td>{{ $row['property_number'] ?: '—' }}</td>
-                    <td>
+                    {{-- <td>{{ $row['division_section'] ?: '—' }}</td> --}}
+                    <td style="white-space: pre-line;">{{ $row['employee_name'] ?: '—' }}</td>
+                    <td style="white-space: pre-line;">{{ $row['property_number'] ?: '—' }}</td>
+                    <td> 
                         {{ $row['date_acquired'] ?: '—' }}
                         @if ($row['is_obsolete'])
                             <br><span class="eol-badge">EOL</span>

@@ -57,25 +57,7 @@ class InventoryController extends Controller
 
         // ── Office filter ────────────────────────────────────────────────────────
         if ($request->filled('office_id')) {
-            $oid = (string) $request->input('office_id');
-
-            $employeeIds = collect($hris->getEmployeesWithParams(['office_id' => $oid]))
-                ->filter(fn ($e) => isset($e['id']))
-                ->pluck('id')
-                ->map(fn ($v) => (int) $v)
-                ->values()
-                ->all();
-
-            if (empty($employeeIds)) {
-                $baseQuery->whereRaw('1 = 0');
-            } else {
-                $baseQuery->where(function ($q) use ($employeeIds) {
-                    $q->whereIn('employee_id', $employeeIds)
-                      ->orWhereHas('parent_component', function ($q2) use ($employeeIds) {
-                          $q2->whereIn('employee_id', $employeeIds);
-                      });
-                });
-            }
+            $baseQuery->where('office_id', (int) $request->input('office_id'));
         }
 
         // ── Tab filter ───────────────────────────────────────────────────────────

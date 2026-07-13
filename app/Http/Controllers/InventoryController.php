@@ -148,6 +148,8 @@ class InventoryController extends Controller
                     'office_id' => $inventory->office_id,
                     'office_code' => $inventory->office_code,
                     'office_name' => $inventory->office_name,
+                    'division_id' => $inventory->division_id,
+                    'division_name' => $inventory->division_name,
                 ]);
         }
 

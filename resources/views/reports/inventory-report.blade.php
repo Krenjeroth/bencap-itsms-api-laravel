@@ -79,14 +79,22 @@
             text-align: center;
         }
 
-        .no-col          { width: 4%; }
-        .property-col    { width: 11%; }
-        .employee-col    { width: 14%; }
-        .division-col    { width: 13%; }
-        .office-col      { width: 11%; }
-        .item-type-col   { width: 10%; }
-        .brand-col       { width: 16%; }
-        .components-col  { width: 21%; }
+        .no-col             { width: 4%; }
+        .property-col       { width: 11%; }
+        .employee-col       { width: 14%; }
+        .division-col       { width: 13%; }
+        .date-acquired-col  { width: 11%; }
+        .item-type-col      { width: 10%; }
+        .brand-col          { width: 16%; }
+        .components-col     { width: 21%; }
+        .components-col-body { font-size: 7px; }
+
+        .date-acquired-cell {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+        }
 
         .no-records td {
             text-align: center;
@@ -219,7 +227,7 @@
                 <th class="division-col">DIVISION</th>
                 <th class="employee-col">ACTUAL USER</th>
                 <th class="property-col">PROPERTY NUMBER</th>
-                <th class="office-col">DATE ACQUIRED</th>
+                <th class="date-acquired-col">DATE ACQUIRED</th>
                 <th class="item-type-col">ITEM TYPE</th>
                 <th class="brand-col">BRAND / MODEL</th>
                 <th class="components-col">CHILD COMPONENTS</th>
@@ -232,11 +240,31 @@
                     <td>{{ $row['division'] ?: '—' }}</td>
                     <td style="white-space: pre-line;">{{ $row['employee_name'] ?: '—' }}</td>
                     <td style="white-space: pre-line;">{{ $row['property_number'] ?: '—' }}</td>
-                    <td> 
+                    {{-- <td> 
                         {{ $row['date_acquired'] ?: '—' }}
                         @if ($row['is_obsolete'])
                             <br><span class="eol-badge">EOL</span>
                         @endif
+                    </td> --}}
+                    {{-- <td class="date-acquired-col">
+                        <div class="date-acquired-cell">
+                            <span>{{ $row['date_acquired'] ?: '—' }}</span>
+                            @if ($row['is_obsolete'])
+                                <span class="eol-badge">EOL</span>
+                            @endif
+                        </div>
+                    </td> --}}
+                    <td class="date-acquired-col">
+                        <table style="width:100%; border:none;">
+                            <tr>
+                                <td style="border:none; padding:0; text-align:left;">{{ $row['date_acquired'] ?: '—' }}</td>
+                                <td style="border:none; padding:0; text-align:right;">
+                                    @if ($row['is_obsolete'])
+                                        <span class="eol-badge">EOL</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                     <td>
                       {{ $row['item_type'] ?: '—' }}
@@ -246,7 +274,7 @@
                     </td>
                      
                     <td>{{ $row['brand_model'] ?: '—' }}</td>
-                    <td style="white-space: pre-line;">{{ $row['child_components'] ?: '—' }}</td>
+                    <td class="components-col components-col-body" style="white-space: pre-line;">{{ $row['child_components'] ?: '—' }}</td>
                 </tr>
             @empty
                 <tr class="no-records">

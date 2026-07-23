@@ -68,6 +68,10 @@ class InventoryController extends Controller
             });
         }
 
+        if ($request->filled('item_type')) {
+            $baseQuery->where('item_type_id', $request->item_type);
+        }
+
         if ($request->filled('division_id')) { // !? not used in frontend
             $divisionId = (int) $request->input('division_id');
 

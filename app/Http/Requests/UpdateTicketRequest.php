@@ -38,6 +38,7 @@ class UpdateTicketRequest extends FormRequest
             'contact_number' => 'nullable|string',
             'is_other_agency' => 'boolean',
             'full_name' => 'nullable|string',
+            'client_name' => 'nullable|string|max:255',
         ];
     }
 
@@ -57,6 +58,7 @@ class UpdateTicketRequest extends FormRequest
             // 'date.required'   => 'The :attribute is required.',
             'is_other_agency.required'   => 'The :attribute is required.',
             'full_name.required'   => 'The :attribute is required.',
+            'client_name.max' => 'The :attribute may not be greater than 255 characters.',
         ];
     }
 }

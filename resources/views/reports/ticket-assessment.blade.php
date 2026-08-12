@@ -4,107 +4,133 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 9pt;
-            color: #000;
-            padding: 18px 24px;
-        }
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 9pt;
+        color: #000;
+        padding: 18px 24px;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 6px;
-        }
-        .header p {
-            font-size: 9pt;
-            line-height: 1.4;
-        }
-        .header .title {
-            color: #00B0F0;
-            font-size: 12pt;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
+    .header-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 6px;
+    }
+    .header-table td {
+        border: none;
+        vertical-align: middle;
+        padding: 0;
+    }
+    .logo-cell-left {
+        width: 18%;
+        text-align: center;
+    }
+    .logo-cell-left img {
+        height: 55px;
+        vertical-align: middle;
+    }
+    .logo-cell-left img.first-logo {
+        margin-right: 12px;
+    }
+    .logo-cell-right {
+        width: 18%;
+        text-align: center;
+    }
+    .logo-cell-right img {
+        height: 55px;
+        vertical-align: middle;
+    }
+    .header-text-cell {
+        width: 64%;
+        text-align: center;
+    }
+    .header-text-cell p {
+        font-size: 9pt;
+        line-height: 1.4;
+    }
+    .header-text-cell .title {
+        color: #00B0F0;
+        font-size: 12pt;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-top: 2px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    table { width: 100%; border-collapse: collapse; }
 
-        .info-table td {
-            border: 1px solid #000;
-            padding: 3px 5px;
-            font-size: 8.5pt;
-            vertical-align: top;
-        }
+    .info-table td {
+        border: 1px solid #000;
+        padding: 3px 5px;
+        font-size: 8.5pt;
+        vertical-align: top;
+    }
 
-        .section-label {
-            font-weight: bold;
-            background: #f0f0f0;
-            border: 1px solid #000;
-            padding: 3px 5px;
-            font-size: 8.5pt;
-        }
+    .section-label {
+        font-weight: bold;
+        background: #f0f0f0;
+        border: 1px solid #000;
+        padding: 3px 5px;
+        font-size: 8.5pt;
+    }
 
-        .component-table td {
-            border: 1px solid #000;
-            padding: 3px 5px;
-            font-size: 8pt;
-            vertical-align: middle;
-        }
-        .component-table .col-header {
-            font-weight: bold;
-            background: #f0f0f0;
-            text-align: center;
-        }
+    .component-table td {
+        border: 1px solid #000;
+        padding: 3px 5px;
+        font-size: 8pt;
+        vertical-align: middle;
+    }
+    .component-table .col-header {
+        font-weight: bold;
+        background: #f0f0f0;
+        text-align: center;
+    }
 
-        .checkbox {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border: 1px solid #000;
-            margin-right: 4px;
-            vertical-align: middle;
-            text-align: center;
-            line-height: 10px;
-            font-size: 8pt;
-        }
-        .checked { background: #000; color: #fff; }
+    .checkbox {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border: 1px solid #000;
+        margin-right: 4px;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 10px;
+        font-size: 8pt;
+    }
+    .checked { background: #000; color: #fff; }
 
-        .findings-box {
-            border: 1px solid #000;
-            min-height: 36px;
-            padding: 4px 5px;
-            font-size: 8.5pt;
-            margin-bottom: -1px;
-        }
+    .findings-box {
+        border: 1px solid #000;
+        min-height: 36px;
+        padding: 4px 5px;
+        font-size: 8.5pt;
+        margin-bottom: -1px;
+    }
 
-        .recommendation-row td {
-            border: 1px solid #000;
-            padding: 4px 5px;
-            font-size: 8pt;
-            vertical-align: middle;
-        }
+    .recommendation-row td {
+        border: 1px solid #000;
+        padding: 4px 5px;
+        font-size: 8pt;
+        vertical-align: middle;
+    }
 
-        .signatory-table td {
-            padding: 4px 5px;
-            font-size: 8.5pt;
-            vertical-align: top;
-            border: none;
-        }
+    .signatory-table td {
+        padding: 4px 5px;
+        font-size: 8.5pt;
+        vertical-align: top;
+        border: none;
+    }
 
-        .notes {
-            margin-top: 6px;
-            font-size: 7.5pt;
-            color: #333;
-        }
-        .notes p { line-height: 1.5; color: #ff0000 }
+    .notes {
+        margin-top: 6px;
+        font-size: 7.5pt;
+        color: #333;
+    }
+    .notes p { line-height: 1.5; color: #ff0000 }
 
-        .divider { border-top: 1px solid #000; margin: 4px 0; }
-        .text-center { text-align: center; }
+    .divider { border-top: 1px solid #000; margin: 4px 0; }
+    .text-center { text-align: center; }
         .text-right { text-align: right; }
         .bold { font-weight: bold; }
         .underline { text-decoration: underline; }
@@ -115,11 +141,29 @@
 <body>
 
     {{-- HEADER --}}
-    <div class="header">
-        <p>PROVINCE OF BENGUET</p>
-        <p style="color: #1F4E78">MANAGEMENT INFORMATION SERVICES</p>
-        <p class="title">REPAIR / ASSESSMENT REPORT</p>
-    </div>
+    {{-- HEADER WITH 3 LOGOS (2 left, 1 right) --}}
+    <table class="header-table">
+        <tr>
+            <td class="logo-cell-left">
+                @if($logo_province)
+                    <img src="{{ $logo_province }}" class="first-logo" alt="Province Seal">
+                @endif
+            </td>
+            <td class="header-text-cell">
+                <p>PROVINCE OF BENGUET</p>
+                <p style="color: #1F4E78">MANAGEMENT INFORMATION SERVICES</p>
+                <p class="title">REPAIR / ASSESSMENT REPORT</p>
+            </td>
+            <td class="logo-cell-right">
+                @if($logo_bagong_pilipinas)
+                    <img src="{{ $logo_bagong_pilipinas }}" alt="Bagong Pilipinas">
+                @endif
+                @if($logo_mis)
+                    <img src="{{ $logo_mis }}" alt="MIS Logo">
+                @endif
+            </td>
+        </tr>
+    </table>
 
     {{-- TOP INFO GRID --}}
     <table class="info-table" style="margin-top: 6px;">

@@ -21,6 +21,44 @@
             margin-bottom: 4px;
         }
 
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
+
+        .header-table td {
+            border: none;
+            padding: 0;
+            vertical-align: middle;
+        }
+
+        .logo-cell-left {
+            width: 70px;
+            text-align: left;
+        }
+
+        .logo-cell-right {
+            width: 130px;
+            text-align: right;
+        }
+
+        .logo-cell-left img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .logo-cell-right img {
+            width: 55px;
+            height: 55px;
+            margin-left: 6px;
+        }
+
+        .header-text-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+
         .subtitle {
             font-size: 10px;
             margin-bottom: 10px;
@@ -187,8 +225,27 @@
     </style>
 </head>
 <body>
-    <div class="title">Inventory Report as of {{ $generatedAt->format('F Y') }}</div>
-    <div class="subtitle">Generated inventory listing based on selected filters</div>
+    <table class="header-table">
+        <tr>
+            <td class="logo-cell-left">
+                @if ($logo_province)
+                    <img src="{{ $logo_province }}" alt="Benguet Seal">
+                @endif
+            </td>
+            <td class="header-text-cell">
+                <div class="title">Inventory Report as of {{ $generatedAt->format('F Y') }}</div>
+                <div class="subtitle">Generated inventory listing based on selected filters</div>
+            </td>
+            <td class="logo-cell-right">
+                @if ($logo_bagong_pilipinas)
+                    <img src="{{ $logo_bagong_pilipinas }}" alt="Bagong Pilipinas">
+                @endif
+                @if ($logo_mis)
+                    <img src="{{ $logo_mis }}" alt="MIS">
+                @endif
+            </td>
+        </tr>
+    </table>
 
     <table class="meta-table">
         <tr>

@@ -219,7 +219,8 @@
         <tr>
             <td></td>
             <td>
-                <span class="label-muted">Acquisition Cost:</span> {{-- {{ $acquisition_cost }} Enable soon --}}
+                <span class="label-muted">Acquisition Cost:</span>
+                <span style="font-family: 'DejaVu Sans', sans-serif;">&#8369;</span>{{ number_format($assessment->acquisition_cost, 2) }}
             </td>
         </tr>
     </table>
@@ -241,7 +242,7 @@
             <td colspan="2" style="width:35%">
                 @php $checked = in_array($pair[0], $components ?? []); @endphp
                 <span class="checkbox {{ $checked ? 'checked' : '' }}">
-                  {{-- {{ $checked ? '✓' : '' }} --}}
+                  <span style="font-family: 'DejaVu Sans', sans-serif;">{{ $checked ? '✔' : '' }}</span>
                 </span>
                 {{ $pair[0] }}
             </td>
@@ -250,7 +251,7 @@
                 @if($pair[1])
                     @php $checked2 = in_array($pair[1], $components ?? []); @endphp
                     <span class="checkbox {{ $checked2 ? 'checked' : '' }}">
-                      {{-- {{ $checked ? '✓' : '' }} --}}
+                      <span style="font-family: 'DejaVu Sans', sans-serif;">{{ $checked2 ? '✔' : '' }}</span>
                     </span>
                     {{ $pair[1] }}
                 @endif
@@ -273,13 +274,13 @@
         <tr>
             <td style="width:70%">
                 <span class="checkbox {{ $assessment->replacement_available ? 'checked' : '' }}">
-                    {{-- {{ $assessment->replacement_available ? '✓' : '' }} --}}
+                    <span style="font-family: 'DejaVu Sans', sans-serif;">{{ $assessment->replacement_available ? '✔' : '' }}</span>
                 </span>
                 Replacement parts is available at the IT Office. Kindly prepare Pre and Post Repair Inspection Report and accomplish the attached RIS Form accordingly.
             </td>
             <td style="width:30%; text-align:center;">
                 <span class="checkbox {{ !$assessment->replacement_available ? 'checked' : '' }}">
-                    {{-- {{ !$assessment->replacement_available ? '✓' : '' }} --}}
+                    <span style="font-family: 'DejaVu Sans', sans-serif;">{{ !$assessment->replacement_available ? '✔' : '' }}</span>
                 </span>
                 <span class="bold">NO AVAILABLE IT STOCK</span>
             </td>

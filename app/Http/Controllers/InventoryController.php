@@ -237,40 +237,48 @@ class InventoryController extends Controller
 
     public function search(Request $request, HrisClientService $hris) {
         Gate::authorize('inventories.view');
-        $query  = trim((string) $request->input('q', ''));
-        $limit  = (int) $request->input('limit', 20);
-        $page   = (int) $request->input('page', 1);
+
+        $query = trim((string) $request->input('q', ''));
+        $limit = max(1, min((int) $request->input('limit', 20), 100));
+        $page = max(1, (int) $request->input('page', 1));
         $offset = ($page - 1) * $limit;
 
         $inventories = Inventory::query()
-            ->when($query, function ($qBuilder) use ($query, $hris) {
-                $needle = mb_strtolower($query);
-
-                // Targeted name search — no full list fetch
+            ->when($query !== '', function ($qBuilder) use ($query, $hris) {
                 $employeeIds = collect($hris->searchEmployees($query))
-                    ->filter(fn ($e) => isset($e['id']))
+                    ->filter(fn ($employee) => isset($employee['id']))
                     ->pluck('id')
-                    ->map(fn ($v) => (int) $v)
+                    ->map(fn ($id) => (int) $id)
                     ->values()
                     ->all();
 
                 $qBuilder->where(function ($q) use ($query, $employeeIds) {
-                    $q->where('property_number', 'like', "%{$query}%");
+                    $q->where('property_number', 'like', "%{$query}%")
+                      ->orWhere('serial_number', 'like', "%{$query}%");
 
                     if (!empty($employeeIds)) {
-                        $q->orWhereIn('employee_id', $employeeIds);
+                        $q->orWhereIn('employee_id', $employeeIds)
+                          ->orWhereHas('parent_component', function ($parentQuery) use ($employeeIds) {
+                              $parentQuery->whereIn('employee_id', $employeeIds);
+                          });
                     }
                 });
             })
+            ->with([
+                'brand_model',
+                'item_type',
+                'parent_component',
+                'internal_components.brand_model',
+            ])
             ->offset($offset)
             ->limit($limit)
             ->get();
 
-        $employeeMap = collect($hris->getEmployeesCached(10))
-            ->filter(fn ($e) => isset($e['id']))
-            ->keyBy(fn ($e) => (int) $e['id']);
-
-        $request->attributes->set('employeeMap', $employeeMap);
+        $this->injectEmployeeMapFromInventories(
+            $request,
+            $inventories,
+            $hris
+        );
 
         return response()->json([
             'data' => InventoryResource::collection($inventories),
@@ -314,6 +322,43 @@ class InventoryController extends Controller
             foreach ($found as $e) {
                 if (isset($e['id'])) {
                     $employeeMap->put((int) $e['id'], $e);
+                }
+            }
+        }
+
+        $request->attributes->set('employeeMap', $employeeMap);
+    }
+
+    private function injectEmployeeMapFromInventories(Request $request, $inventories, HrisClientService $hris): void {
+        $employeeIds = collect($inventories)
+            ->flatMap(function (Inventory $inventory) {
+                return [
+                    $inventory->employee_id,
+                    $inventory->parent_component?->employee_id,
+                ];
+            })
+            ->filter(fn ($id) => $id !== null && $id !== '')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        $employeeMap = collect($hris->getEmployeesCached(10))
+            ->filter(fn ($employee) => isset($employee['id']))
+            ->keyBy(fn ($employee) => (int) $employee['id']);
+
+        foreach ($employeeIds as $employeeId) {
+            if ($employeeMap->has($employeeId)) {
+                continue;
+            }
+
+            $employees = $hris->getEmployeesWithParams(
+                ['employee_id' => (string) $employeeId],
+                30
+            );
+
+            foreach ($employees as $employee) {
+                if (isset($employee['id'])) {
+                    $employeeMap->put((int) $employee['id'], $employee);
                 }
             }
         }

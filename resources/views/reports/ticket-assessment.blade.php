@@ -220,7 +220,7 @@
             <td></td>
             <td>
                 <span class="label-muted">Acquisition Cost:</span>
-                <span style="font-family: 'DejaVu Sans', sans-serif;">&#8369;</span>{{ number_format($assessment->acquisition_cost, 2) }}
+                <span style="font-family: 'DejaVu Sans', sans-serif;">&#8369;</span>{{ number_format($assessment->acquisition_cost, 2) }}{{ $assessment->is_set ? ' (Set)' : '' }}
             </td>
         </tr>
     </table>

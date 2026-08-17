@@ -163,6 +163,11 @@ Route::middleware([
             MeasurementUnitController::class,
             'select',
         ])->middleware('can:measurement_units.select');
+        
+        Route::get('offices', [
+            OfficeController::class,
+            'index',
+        ])->middleware('can:offices.view');
     });
 
     /*

@@ -73,7 +73,7 @@ class OfficeController extends Controller
     }
 
     public function search(Request $request, HrisClientService $hris) {
-        Gate::authorize('offices.view');
+        Gate::authorize('offices.search');
 
         $q = trim((string) $request->input('q', ''));
         $limit = (int) $request->input('limit', 20);

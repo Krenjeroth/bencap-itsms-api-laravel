@@ -236,7 +236,7 @@ class InventoryController extends Controller
     }
 
     public function search(Request $request, HrisClientService $hris) {
-        Gate::authorize('inventories.view');
+        Gate::authorize('inventories.search');
 
         $query = trim((string) $request->input('q', ''));
         $limit = max(1, min((int) $request->input('limit', 20), 100));

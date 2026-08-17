@@ -339,6 +339,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'item_types.select',
                 'it_services.select',
                 'measurement_units.select',
+                'agencies.select',
 
                 'employees.view',
                 'offices.view',
